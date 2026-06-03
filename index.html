@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GinecoApp Pro — Miomas & Endometriosis</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f14;
+    --bg2: #13141b;
+    --bg3: #1a1b25;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e9f0;
+    --text2: #8e90a8;
+    --text3: #5c5e74;
+    --accent: #c96aaa;
+    --accent2: #7c6af5;
+    --accent3: #4fc9a4;
+    --accent4: #f5a645;
+    --danger: #f06060;
+    --success: #4fc9a4;
+    --warn: #f5a645;
+    --card: #161720;
+    --card2: #1c1d2a;
+    --radius: 14px;
+    --radius2: 8px;
+    --shadow: 0 8px 40px rgba(0,0,0,0.5);
+    --shadow2: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* ---- LAYOUT ---- */
+  .app-shell { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 240px; flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; height: 100vh;
+    z-index: 100; transition: transform 0.3s;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-mark {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); }
+  .logo-sub { font-size: 10px; color: var(--text2); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+  .nav { flex: 1; padding: 16px 10px; overflow-y: auto; }
+  .nav-section-label {
+    font-size: 10px; color: var(--text3); letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 12px 10px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: var(--radius2);
+    cursor: pointer; color: var(--text2); font-size: 13.5px;
+    transition: all 0.15s; border: none; background: none; width: 100%;
+    text-align: left;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: rgba(201,106,170,0.15); color: var(--accent); font-weight: 500; }
+  .nav-item .nav-icon { width: 18px; text-align: center; flex-shrink: 0; font-size: 15px; }
+  .nav-badge {
+    margin-left: auto; background: var(--accent);
+    color: white; font-size: 10px; padding: 1px 6px;
+    border-radius: 20px; font-weight: 600;
+  }
+  .sidebar-footer {
+    padding: 14px 16px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text3);
+  }
+  .main {
+    flex: 1; margin-left: 240px;
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+  .topbar {
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 0 28px; height: 60px;
+    display: flex; align-items: center; gap: 16px;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-family: 'DM Serif Display', serif; font-size: 20px; flex: 1; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .content { flex: 1; padding: 28px; overflow-y: auto; }
+
+  /* ---- BUTTONS ---- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: var(--radius2);
+    font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+    font-weight: 500; cursor: pointer; border: none; transition: all 0.15s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #d678b8; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,106,170,0.4); }
+  .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); }
+  .btn-secondary:hover { background: var(--card2); }
+  .btn-ghost { background: transparent; color: var(--text2); }
+  .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+  .btn-success { background: var(--accent3); color: #0e2a20; }
+  .btn-success:hover { background: #5dd9b4; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-icon { width: 34px; height: 34px; padding: 0; justify-content: center; border-radius: var(--radius2); }
+
+  /* ---- CARDS ---- */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+  }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-family: 'DM Serif Display', serif; font-size: 17px; }
+  .card-subtitle { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  /* ---- GRID ---- */
+  .grid { display: grid; gap: 20px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  /* ---- STAT CARDS ---- */
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .stat-card.pink::before { background: var(--accent); }
+  .stat-card.purple::before { background: var(--accent2); }
+  .stat-card.green::before { background: var(--accent3); }
+  .stat-card.orange::before { background: var(--accent4); }
+  .stat-value { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text); }
+  .stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .stat-change { font-size: 11px; margin-top: 6px; }
+  .stat-change.up { color: var(--success); }
+  .stat-change.down { color: var(--danger); }
+  .stat-icon { position: absolute; top: 16px; right: 16px; font-size: 24px; opacity: 0.25; }
+
+  /* ---- FORMS ---- */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block; font-size: 12px; color: var(--text2);
+    margin-bottom: 6px; font-weight: 500; letter-spacing: 0.3px;
+  }
+  .form-control {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--radius2); padding: 9px 12px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+    transition: border-color 0.15s; outline: none;
+  }
+  .form-control:focus { border-color: var(--accent); }
+  .form-control::placeholder { color: var(--text3); }
+  select.form-control option { background: var(--bg3); }
+  textarea.form-control { resize: vertical; min-height: 80px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .form-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  /* ---- TAGS / BADGES ---- */
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 11px; font-weight: 500;
+  }
+  .tag-pink { background: rgba(201,106,170,0.2); color: var(--accent); border: 1px solid rgba(201,106,170,0.3); }
+  .tag-purple { background: rgba(124,106,245,0.2); color: var(--accent2); border: 1px solid rgba(124,106,245,0.3); }
+  .tag-green { background: rgba(79,201,164,0.2); color: var(--accent3); border: 1px solid rgba(79,201,164,0.3); }
+  .tag-orange { background: rgba(245,166,69,0.2); color: var(--accent4); border: 1px solid rgba(245,166,69,0.3); }
+  .tag-red { background: rgba(240,96,96,0.2); color: var(--danger); border: 1px solid rgba(240,96,96,0.3); }
+  .tag-gray { background: rgba(142,144,168,0.15); color: var(--text2); border: 1px solid var(--border); }
+
+  /* ---- PATIENT LIST ---- */
+  .patient-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 16px; border-radius: var(--radius2);
+    cursor: pointer; border: 1px solid transparent;
+    transition: all 0.15s; background: var(--card);
+    margin-bottom: 6px;
+  }
+  .patient-row:hover { border-color: var(--border2); background: var(--card2); }
+  .patient-row.selected { border-color: var(--accent); background: rgba(201,106,170,0.08); }
+  .patient-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px; flex-shrink: 0;
+  }
+  .patient-info { flex: 1; min-width: 0; }
+  .patient-name { font-weight: 500; font-size: 14px; }
+  .patient-meta { font-size: 12px; color: var(--text2); }
+  .patient-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+  .patient-actions { display: flex; gap: 6px; opacity: 0; transition: opacity 0.15s; }
+  .patient-row:hover .patient-actions { opacity: 1; }
+
+  /* ---- TABS ---- */
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tab-item {
+    padding: 10px 16px; cursor: pointer; color: var(--text2);
+    font-size: 13.5px; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all 0.15s; font-weight: 500;
+  }
+  .tab-item:hover { color: var(--text); }
+  .tab-item.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ---- MODAL ---- */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 16px; width: 100%; max-width: 640px;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: var(--shadow);
+    transform: translateY(20px); transition: transform 0.2s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0;
+    background: var(--bg2); z-index: 10;
+  }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; }
+  .modal-body { padding: 20px 24px; }
+  .modal-footer {
+    padding: 14px 24px; border-top: 1px solid var(--border);
+    display: flex; gap: 8px; justify-content: flex-end;
+    position: sticky; bottom: 0; background: var(--bg2);
+  }
+
+  /* ---- PROGRESS / RISK ---- */
+  .risk-bar { height: 6px; border-radius: 3px; background: var(--bg3); overflow: hidden; }
+  .risk-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+  .risk-low { background: var(--accent3); }
+  .risk-mid { background: var(--accent4); }
+  .risk-high { background: var(--danger); }
+
+  /* ---- ALGORITHM TREE ---- */
+  .algo-step {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius2); padding: 12px 14px; margin-bottom: 10px;
+    position: relative; padding-left: 38px;
+  }
+  .algo-step::before {
+    content: attr(data-step);
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+  }
+  .algo-step-title { font-weight: 500; font-size: 13.5px; }
+  .algo-step-desc { font-size: 12px; color: var(--text2); margin-top: 3px; }
+  .algo-connector { width: 2px; height: 10px; background: var(--border2); margin: 0 auto -4px 19px; }
+
+  /* ---- SCORE DISPLAY ---- */
+  .score-circle {
+    width: 80px; height: 80px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; border: 3px solid;
+    flex-shrink: 0;
+  }
+  .score-num { font-family: 'DM Serif Display', serif; font-size: 24px; line-height: 1; }
+  .score-label { font-size: 9px; color: var(--text2); letter-spacing: 0.5px; }
+
+  /* ---- TIMELINE ---- */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 6px; top: 0; bottom: 0;
+    width: 2px; background: var(--border2);
+  }
+  .timeline-item { position: relative; margin-bottom: 18px; }
+  .timeline-dot {
+    position: absolute; left: -20px; top: 4px;
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--accent); background: var(--bg);
+  }
+  .timeline-date { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .timeline-content { font-size: 13px; }
+
+  /* ---- SECTIONS ---- */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ---- NOTIFICATION ---- */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
+    background: var(--card2); border: 1px solid var(--border2);
+    border-radius: var(--radius2); padding: 12px 16px;
+    max-width: 320px; box-shadow: var(--shadow);
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.3s; font-size: 13.5px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-left: 3px solid var(--success); }
+  .toast.error { border-left: 3px solid var(--danger); }
+  .toast.info { border-left: 3px solid var(--accent2); }
+
+  /* ---- CHIP SELECT ---- */
+  .chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px;
+    border: 1px solid var(--border2); cursor: pointer;
+    transition: all 0.15s; background: var(--bg3); color: var(--text2);
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.selected { background: rgba(201,106,170,0.2); border-color: var(--accent); color: var(--accent); font-weight: 500; }
+
+  /* ---- DIVIDER ---- */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+  /* ---- SEARCH ---- */
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--radius2); padding: 7px 12px; flex: 1; max-width: 280px;
+  }
+  .search-box input {
+    background: none; border: none; outline: none; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 13.5px; flex: 1;
+  }
+  .search-box input::placeholder { color: var(--text3); }
+
+  /* ---- REPORT ---- */
+  .report-section { margin-bottom: 24px; }
+  .report-section h3 { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--accent); margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  .report-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .report-row:last-child { border-bottom: none; }
+  .report-row-key { color: var(--text2); }
+  .report-row-val { font-weight: 500; }
+
+  /* ---- MOBILE ---- */
+  .hamburger { display: none; }
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); box-shadow: var(--shadow); }
+    .main { margin-left: 0; }
+    .hamburger { display: flex; }
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .form-row-3 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .grid-4 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .content { padding: 16px; }
+    .topbar { padding: 0 16px; }
+  }
+  .mobile-overlay { display: none; position: fixed; inset: 0; z-index: 99; background: rgba(0,0,0,0.5); }
+  .mobile-overlay.open { display: block; }
+
+  /* ---- MISC ---- */
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--text2); }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-state h3 { font-family: 'DM Serif Display', serif; color: var(--text); margin-bottom: 6px; }
+  .info-box { background: rgba(124,106,245,0.1); border: 1px solid rgba(124,106,245,0.3); border-radius: var(--radius2); padding: 12px 14px; font-size: 13px; color: var(--text2); }
+  .info-box .info-title { color: var(--accent2); font-weight: 600; margin-bottom: 4px; font-size: 12px; }
+  .warn-box { background: rgba(245,166,69,0.1); border: 1px solid rgba(245,166,69,0.3); border-radius: var(--radius2); padding: 12px 14px; font-size: 13px; }
+  .warn-box .warn-title { color: var(--accent4); font-weight: 600; margin-bottom: 4px; }
+  .success-box { background: rgba(79,201,164,0.1); border: 1px solid rgba(79,201,164,0.3); border-radius: var(--radius2); padding: 12px 14px; font-size: 13px; }
+  .success-box .success-title { color: var(--accent3); font-weight: 600; margin-bottom: 4px; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .text-sm { font-size: 12px; }
+  .text-xs { font-size: 11px; }
+  .text-muted { color: var(--text2); }
+  .fw-500 { font-weight: 500; }
+  .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; }
+  .mt-4 { margin-top: 16px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-3 { margin-bottom: 12px; }
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .gap-4 { gap: 16px; }
+
+  /* highlight */
+  .hl-pink { color: var(--accent); }
+  .hl-purple { color: var(--accent2); }
+  .hl-green { color: var(--accent3); }
+  .hl-orange { color: var(--accent4); }
+  .hl-red { color: var(--danger); }
+
+  /* loading spinner */
+  .spinner {
+    width: 20px; height: 20px; border: 2px solid var(--border2);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* fade in */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.3s ease forwards; }
+
+  /* print */
+  @media print {
+    .sidebar, .topbar, .no-print { display: none !important; }
+    .main { margin-left: 0 !important; }
+    body { background: white; color: black; font-size: 12px; }
+    .card { border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<div id="mobileOverlay" class="mobile-overlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">🌸</div>
+      <div>
+        <div class="logo-text">GinecoApp</div>
+        <div class="logo-sub">Pro · 2025</div>
+      </div>
+    </div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section-label">Principal</div>
+    <button class="nav-item active" onclick="showSection('dashboard', this)">
+      <span class="nav-icon">📊</span> Dashboard
+    </button>
+    <button class="nav-item" onclick="showSection('pacientes', this)">
+      <span class="nav-icon">👩</span> Pacientes
+      <span class="nav-badge" id="badgePacientes">0</span>
+    </button>
+    <button class="nav-item" onclick="showSection('nueva', this)">
+      <span class="nav-icon">➕</span> Nueva Paciente
+    </button>
+    <div class="nav-section-label">Evaluación</div>
+    <button class="nav-item" onclick="showSection('algoritmos', this)">
+      <span class="nav-icon">🔬</span> Algoritmos DX
+    </button>
+    <button class="nav-item" onclick="showSection('tratamiento', this)">
+      <span class="nav-icon">💊</span> Tratamiento
+    </button>
+    <button class="nav-item" onclick="showSection('fertilidad', this)">
+      <span class="nav-icon">🌱</span> Fertilidad
+    </button>
+    <div class="nav-section-label">Herramientas</div>
+    <button class="nav-item" onclick="showSection('scores', this)">
+      <span class="nav-icon">📏</span> Escalas & Scores
+    </button>
+    <button class="nav-item" onclick="showSection('guias', this)">
+      <span class="nav-icon">📋</span> Guías 2025
+    </button>
+    <button class="nav-item" onclick="showSection('informes', this)">
+      <span class="nav-icon">📄</span> Informes
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div style="font-size:11px; color: var(--text3);">ESHRE 2022 · SEGO 2025</div>
+    <div style="font-size:10px; color: var(--text3); margin-top:2px;">v2.0.1 — Uso clínico</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <button class="btn btn-icon btn-ghost hamburger" onclick="toggleSidebar()">☰</button>
+    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="topbar-actions">
+      <div class="search-box">
+        <span style="color:var(--text3)">🔍</span>
+        <input type="text" id="globalSearch" placeholder="Buscar paciente…" oninput="filterPatients(this.value)">
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="showSection('nueva', document.querySelector('.nav-item:nth-child(3)'))">+ Nueva</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- =================== DASHBOARD =================== -->
+    <div id="s-dashboard" class="section active fade-in">
+      <div class="grid grid-4 mb-3">
+        <div class="stat-card pink">
+          <div class="stat-icon">👩</div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">Pacientes registradas</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon">🔬</div>
+          <div class="stat-value" id="statEndo">0</div>
+          <div class="stat-label">Con Endometriosis</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon">🔵</div>
+          <div class="stat-value" id="statMioma">0</div>
+          <div class="stat-label">Con Miomas</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">🌱</div>
+          <div class="stat-value" id="statFert">0</div>
+          <div class="stat-label">Desean gestación</div>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Últimas pacientes</div><div class="card-subtitle">Registros recientes</div></div>
+            <button class="btn btn-ghost btn-sm" onclick="showSection('pacientes', null)">Ver todas →</button>
+          </div>
+          <div id="dashRecentList">
+            <div class="empty-state"><div class="empty-icon">👩‍⚕️</div><div>No hay pacientes aún</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Distribución por patología</div></div>
+          </div>
+          <div id="dashChart" style="padding:10px 0">
+            <div style="margin-bottom:14px">
+              <div class="flex justify-between text-sm mb-2"><span>Endometriosis</span><span class="hl-pink" id="pctEndo">0%</span></div>
+              <div class="risk-bar"><div class="risk-fill risk-high" id="barEndo" style="width:0%"></div></div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div class="flex justify-between text-sm mb-2"><span>Miomas</span><span class="hl-orange" id="pctMioma">0%</span></div>
+              <div class="risk-bar"><div class="risk-fill risk-mid" id="barMioma" style="width:0%"></div></div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div class="flex justify-between text-sm mb-2"><span>Ambas patologías</span><span class="hl-purple" id="pctAmbas">0%</span></div>
+              <div class="risk-bar"><div class="risk-fill" style="background:var(--accent2);width:0%" id="barAmbas"></div></div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm mb-2"><span>Desean gestación</span><span class="hl-green" id="pctFert">0%</span></div>
+              <div class="risk-bar"><div class="risk-fill risk-low" id="barFert" style="width:0%"></div></div>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="info-box mt-2">
+            <div class="info-title">📌 Recordatorio clínico</div>
+            El diagnóstico de endometriosis no requiere laparoscopía como estándar de oro. La ecografía y RM son primera línea (ESHRE 2022).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== LISTA PACIENTES =================== -->
+    <div id="s-pacientes" class="section fade-in">
+      <div class="flex items-center justify-between mb-3">
+        <div style="font-size:13px; color:var(--text2)"><span id="countPacientes">0</span> pacientes registradas</div>
+        <div class="flex gap-2">
+          <select class="form-control" style="width:auto;padding:6px 10px" id="filterPatologia" onchange="renderPatientList()">
+            <option value="">Todas las patologías</option>
+            <option value="endometriosis">Endometriosis</option>
+            <option value="miomas">Miomas</option>
+            <option value="ambas">Ambas</option>
+          </select>
+          <select class="form-control" style="width:auto;padding:6px 10px" id="filterGestacion" onchange="renderPatientList()">
+            <option value="">Todas</option>
+            <option value="si">Desean gestación</option>
+            <option value="no">No desean gestación</option>
+          </select>
+        </div>
+      </div>
+      <div id="patientListContainer"></div>
+    </div>
+
+    <!-- =================== NUEVA PACIENTE =================== -->
+    <div id="s-nueva" class="section fade-in">
+      <div class="card">
+        <div class="card-header">
+          <div><div class="card-title">Registrar nueva paciente</div><div class="card-subtitle">Datos clínicos completos</div></div>
+        </div>
+        <div class="tabs" id="formTabs">
+          <div class="tab-item active" onclick="switchFormTab(0, this)">Datos Personales</div>
+          <div class="tab-item" onclick="switchFormTab(1, this)">Síntomas</div>
+          <div class="tab-item" onclick="switchFormTab(2, this)">Diagnóstico</div>
+          <div class="tab-item" onclick="switchFormTab(3, this)">Tratamiento</div>
+          <div class="tab-item" onclick="switchFormTab(4, this)">Fertilidad</div>
+        </div>
+
+        <!-- TAB 0: DATOS PERSONALES -->
+        <div id="formTab0">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre completo *</label>
+              <input class="form-control" id="fNombre" placeholder="Apellidos, Nombre" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">NHC / Expediente</label>
+              <input class="form-control" id="fNHC" placeholder="Número de historia clínica">
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Fecha de nacimiento *</label>
+              <input type="date" class="form-control" id="fFechaNac">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Estado civil</label>
+              <select class="form-control" id="fEstadoCivil">
+                <option value="">—</option>
+                <option>Soltera</option><option>Casada</option><option>Pareja estable</option><option>Viuda</option><option>Divorciada</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Teléfono</label>
+              <input class="form-control" id="fTelefono" placeholder="+34 600 000 000">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">IMC (kg/m²)</label>
+              <input type="number" class="form-control" id="fIMC" placeholder="22.5" step="0.1">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Menarquia (años)</label>
+              <input type="number" class="form-control" id="fMenarquia" placeholder="12" min="8" max="18">
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label class="form-label">Paridad (G/P/A)</label>
+              <input class="form-control" id="fParidad" placeholder="G0 P0 A0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Anticoncepción actual</label>
+              <select class="form-control" id="fAnticonc">
+                <option value="">—</option>
+                <option>Ninguna</option><option>ACO combinados</option><option>Progestágenos</option>
+                <option>DIU-LNG</option><option>Implante</option><option>Preservativo</option><option>DIU cobre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Desea gestación</label>
+              <select class="form-control" id="fDeseoGestacion">
+                <option value="no">No</option>
+                <option value="si">Sí, inmediata</option>
+                <option value="futuro">Sí, futura</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Antecedentes familiares relevantes</label>
+            <div class="chip-group" id="chipAntFam">
+              <div class="chip" onclick="toggleChip(this)">Endometriosis 1er grado</div>
+              <div class="chip" onclick="toggleChip(this)">Ca. ovario</div>
+              <div class="chip" onclick="toggleChip(this)">Ca. endometrial</div>
+              <div class="chip" onclick="toggleChip(this)">Miomas</div>
+              <div class="chip" onclick="toggleChip(this)">Infertilidad</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 1: SÍNTOMAS -->
+        <div id="formTab1" style="display:none">
+          <div class="warn-box mb-3">
+            <div class="warn-title">⚠️ Triaje sintomático (ESHRE 2022 – Rec. 1)</div>
+            Considerar endometriosis ante la presencia de uno o más síntomas cíclicos o no cíclicos:
+          </div>
+          <div class="form-group">
+            <label class="form-label">Síntomas principales</label>
+            <div class="chip-group" id="chipSintomas">
+              <div class="chip" onclick="toggleChip(this)">Dismenorrea</div>
+              <div class="chip" onclick="toggleChip(this)">Dispareunia profunda</div>
+              <div class="chip" onclick="toggleChip(this)">Disuria</div>
+              <div class="chip" onclick="toggleChip(this)">Disquecia</div>
+              <div class="chip" onclick="toggleChip(this)">Sangrado rectal doloroso</div>
+              <div class="chip" onclick="toggleChip(this)">Hematuria cíclica</div>
+              <div class="chip" onclick="toggleChip(this)">Dolor hombro</div>
+              <div class="chip" onclick="toggleChip(this)">Neumotórax catamenial</div>
+              <div class="chip" onclick="toggleChip(this)">Tos/hemoptisis cíclica</div>
+              <div class="chip" onclick="toggleChip(this)">Infertilidad</div>
+              <div class="chip" onclick="toggleChip(this)">Fatiga crónica</div>
+              <div class="chip" onclick="toggleChip(this)">Sangrado uterino abundante</div>
+              <div class="chip" onclick="toggleChip(this)">Dolor pélvico crónico</div>
+              <div class="chip" onclick="toggleChip(this)">Hinchazón abdominal</div>
+              <div class="chip" onclick="toggleChip(this)">Compresión urinaria</div>
+              <div class="chip" onclick="toggleChip(this)">Urgencia miccional</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">EVA Dismenorrea (0–10)</label>
+              <input type="range" id="evaDismenorrea" min="0" max="10" value="0" class="form-control" style="padding:4px" oninput="document.getElementById('evaDismenorreaVal').textContent=this.value">
+              <div class="form-hint">Puntuación actual: <strong id="evaDismenorreaVal">0</strong></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">EVA Dolor pélvico no menstrual (0–10)</label>
+              <input type="range" id="evaDolor" min="0" max="10" value="0" class="form-control" style="padding:4px" oninput="document.getElementById('evaDolorVal').textContent=this.value">
+              <div class="form-hint">Puntuación actual: <strong id="evaDolorVal">0</strong></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Duración síntomas</label>
+              <select class="form-control" id="fDuracion">
+                <option value="">—</option>
+                <option>< 6 meses</option><option>6–12 meses</option>
+                <option>1–3 años</option><option>3–5 años</option><option>> 5 años</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Demora diagnóstica estimada</label>
+              <select class="form-control" id="fDemora">
+                <option value="">—</option>
+                <option>< 1 año</option><option>1–3 años</option>
+                <option>3–7 años</option><option>> 7 años</option>
+              </select>
+              <div class="form-hint">La demora media global es 7–12 años</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Observaciones sintomáticas</label>
+            <textarea class="form-control" id="fObsSint" placeholder="Patrón cíclico, factores agravantes/atenuantes…"></textarea>
+          </div>
+        </div>
+
+        <!-- TAB 2: DIAGNÓSTICO -->
+        <div id="formTab2" style="display:none">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Diagnóstico principal</label>
+              <select class="form-control" id="fDx" onchange="updateDxFields()">
+                <option value="">— Seleccionar —</option>
+                <option value="endometriosis">Endometriosis</option>
+                <option value="miomas">Miomas Uterinos</option>
+                <option value="ambas">Endometriosis + Miomas</option>
+                <option value="sospecha">Sospecha (pendiente estudio)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fecha diagnóstico</label>
+              <input type="date" class="form-control" id="fFechaDx">
+            </div>
+          </div>
+          <!-- ENDOMETRIOSIS FIELDS -->
+          <div id="endoFields" style="display:none">
+            <hr class="divider">
+            <div style="color:var(--accent); font-size:13px; font-weight:600; margin-bottom:12px">🔬 Endometriosis</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Clasificación rASRM</label>
+                <select class="form-control" id="fASRM">
+                  <option value="">—</option>
+                  <option value="I">Estadio I – Mínima</option>
+                  <option value="II">Estadio II – Leve</option>
+                  <option value="III">Estadio III – Moderada</option>
+                  <option value="IV">Estadio IV – Severa</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Método diagnóstico</label>
+                <select class="form-control" id="fMetodoDx">
+                  <option value="">—</option>
+                  <option>Ecografía TV</option>
+                  <option>RM pélvica</option>
+                  <option>Laparoscopía + histología</option>
+                  <option>Laparoscopía sin histología</option>
+                  <option>Diagnóstico clínico (empírico)</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Localización lesiones</label>
+              <div class="chip-group" id="chipLocEndo">
+                <div class="chip" onclick="toggleChip(this)">Peritoneal superficial</div>
+                <div class="chip" onclick="toggleChip(this)">Endometrioma ovárico</div>
+                <div class="chip" onclick="toggleChip(this)">Endometriosis profunda</div>
+                <div class="chip" onclick="toggleChip(this)">Tabique rectovaginal</div>
+                <div class="chip" onclick="toggleChip(this)">Ligamentos uterosacros</div>
+                <div class="chip" onclick="toggleChip(this)">Intestinal</div>
+                <div class="chip" onclick="toggleChip(this)">Vesical</div>
+                <div class="chip" onclick="toggleChip(this)">Ureteral</div>
+                <div class="chip" onclick="toggleChip(this)">Diafragmática</div>
+                <div class="chip" onclick="toggleChip(this)">Pared abdominal</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Tamaño endometrioma (mm)</label>
+                <input type="number" class="form-control" id="fTamEndometrioma" placeholder="mm">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Adenomiosis asociada</label>
+                <select class="form-control" id="fAdenomiosis">
+                  <option value="">—</option>
+                  <option>No</option><option>Sí, focal</option><option>Sí, difusa</option><option>Sospecha</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- MIOMAS FIELDS -->
+          <div id="miomaFields" style="display:none">
+            <hr class="divider">
+            <div style="color:var(--accent4); font-size:13px; font-weight:600; margin-bottom:12px">🔵 Miomas Uterinos</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Tipo FIGO (principal)</label>
+                <select class="form-control" id="fFIGO">
+                  <option value="">—</option>
+                  <option value="0">Tipo 0 – Submucoso pediculado</option>
+                  <option value="1">Tipo 1 – Submucoso < 50% intramural</option>
+                  <option value="2">Tipo 2 – Submucoso ≥ 50% intramural</option>
+                  <option value="3">Tipo 3 – Intramural (contacta endometrio)</option>
+                  <option value="4">Tipo 4 – Intramural</option>
+                  <option value="5">Tipo 5 – Subseroso ≥ 50% intramural</option>
+                  <option value="6">Tipo 6 – Subseroso < 50% intramural</option>
+                  <option value="7">Tipo 7 – Subseroso pediculado</option>
+                  <option value="8">Tipo 8 – Otros (cervical, parásito)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Número de miomas</label>
+                <select class="form-control" id="fNumMiomas">
+                  <option>1</option><option>2</option><option>3</option>
+                  <option>4-5</option><option>> 5</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label class="form-label">Tamaño mayor (mm)</label>
+                <input type="number" class="form-control" id="fTamMioma" placeholder="mm">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Volumen uterino (cc)</label>
+                <input type="number" class="form-control" id="fVolUterino" placeholder="cc">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Distorsión cavidad</label>
+                <select class="form-control" id="fDistorsion">
+                  <option>No</option><option>Sí</option><option>Posible</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Síntomas asociados</label>
+              <div class="chip-group" id="chipSintMioma">
+                <div class="chip" onclick="toggleChip(this)">SUA (Sangrado abundante)</div>
+                <div class="chip" onclick="toggleChip(this)">Compresión vesical</div>
+                <div class="chip" onclick="toggleChip(this)">Compresión ureteral</div>
+                <div class="chip" onclick="toggleChip(this)">Dolor pélvico</div>
+                <div class="chip" onclick="toggleChip(this)">Estreñimiento</div>
+                <div class="chip" onclick="toggleChip(this)">Anemia</div>
+                <div class="chip" onclick="toggleChip(this)">Pérdida gestacional</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Hemoglobina (g/dL)</label>
+                <input type="number" class="form-control" id="fHgb" placeholder="12.5" step="0.1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Reserva ovárica AMH (ng/mL)</label>
+                <input type="number" class="form-control" id="fAMH" placeholder="2.5" step="0.1">
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            <label class="form-label">Notas diagnósticas / Imagen</label>
+            <textarea class="form-control" id="fNotesDx" placeholder="Hallazgos ecográficos, RM, laparoscópicos…"></textarea>
+          </div>
+        </div>
+
+        <!-- TAB 3: TRATAMIENTO -->
+        <div id="formTab3" style="display:none">
+          <div class="form-group">
+            <label class="form-label">Estado de tratamiento actual</label>
+            <select class="form-control" id="fEstadoTx">
+              <option value="ninguno">Sin tratamiento activo</option>
+              <option value="medico">Tratamiento médico</option>
+              <option value="quirurgico">Post-quirúrgico</option>
+              <option value="mixto">Médico + Quirúrgico</option>
+              <option value="seguimiento">Seguimiento expectante</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tratamientos médicos recibidos/actuales</label>
+            <div class="chip-group" id="chipTxMedico">
+              <div class="chip" onclick="toggleChip(this)">ACO combinados</div>
+              <div class="chip" onclick="toggleChip(this)">Progestágenos (oral)</div>
+              <div class="chip" onclick="toggleChip(this)">DIU-LNG</div>
+              <div class="chip" onclick="toggleChip(this)">Implante etonogestrel</div>
+              <div class="chip" onclick="toggleChip(this)">Agonistas GnRH</div>
+              <div class="chip" onclick="toggleChip(this)">Antagonistas GnRH (Relugolix)</div>
+              <div class="chip" onclick="toggleChip(this)">Antagonistas GnRH (Linzagolix)</div>
+              <div class="chip" onclick="toggleChip(this)">Inhibidores aromatasa</div>
+              <div class="chip" onclick="toggleChip(this)">AINEs</div>
+              <div class="chip" onclick="toggleChip(this)">Ácido tranexámico</div>
+              <div class="chip" onclick="toggleChip(this)">Dienogest</div>
+              <div class="chip" onclick="toggleChip(this)">Vitamina D</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Intervenciones quirúrgicas</label>
+            <div class="chip-group" id="chipTxQx">
+              <div class="chip" onclick="toggleChip(this)">Laparoscopía diagnóstica</div>
+              <div class="chip" onclick="toggleChip(this)">Escisión endometriosis</div>
+              <div class="chip" onclick="toggleChip(this)">Ablación endometriosis</div>
+              <div class="chip" onclick="toggleChip(this)">Quistectomía ovárica</div>
+              <div class="chip" onclick="toggleChip(this)">Miomectomía histeroscópica</div>
+              <div class="chip" onclick="toggleChip(this)">Miomectomía laparoscópica</div>
+              <div class="chip" onclick="toggleChip(this)">Miomectomía laparotómica</div>
+              <div class="chip" onclick="toggleChip(this)">HIFU/Radiofrecuencia</div>
+              <div class="chip" onclick="toggleChip(this)">Embolización (EAU)</div>
+              <div class="chip" onclick="toggleChip(this)">Histerectomía</div>
+              <div class="chip" onclick="toggleChip(this)">Resección intestinal</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Respuesta al tratamiento</label>
+              <select class="form-control" id="fRespTx">
+                <option value="">—</option>
+                <option>Excelente (EVA 0-2)</option>
+                <option>Buena (EVA 3-4)</option>
+                <option>Parcial (EVA 5-6)</option>
+                <option>Escasa (EVA 7-8)</option>
+                <option>Refractaria (EVA 9-10)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Próxima revisión</label>
+              <input type="date" class="form-control" id="fProxRevision">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Plan terapéutico / Notas</label>
+            <textarea class="form-control" id="fPlanTx" placeholder="Descripción del plan, cambios de medicación, objetivos…"></textarea>
+          </div>
+        </div>
+
+        <!-- TAB 4: FERTILIDAD -->
+        <div id="formTab4" style="display:none">
+          <div class="form-group">
+            <label class="form-label">Tiempo búsqueda gestación (meses)</label>
+            <input type="number" class="form-control" id="fTiempoInfert" placeholder="0">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Factor masculino</label>
+              <select class="form-control" id="fFactorMasc">
+                <option value="">—</option>
+                <option>Normal</option><option>Oligozoospermia leve</option>
+                <option>Oligozoospermia severa</option><option>Azoospermia</option>
+                <option>No estudiado</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Permeabilidad tubárica</label>
+              <select class="form-control" id="fPermeabilidad">
+                <option value="">—</option>
+                <option>Bilateral permeable</option>
+                <option>Unilateral obstruida</option>
+                <option>Bilateral obstruida</option>
+                <option>No estudiada</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Score EFI estimado (0–10)</label>
+              <input type="number" class="form-control" id="fEFI" placeholder="0-10" min="0" max="10">
+              <div class="form-hint">EFI ≥ 7: intento natural/IUI · EFI < 7: considerar FIV</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Técnicas de reproducción asistida</label>
+              <select class="form-control" id="fTRA">
+                <option value="ninguna">No realizadas</option>
+                <option value="iui">IUI completada</option>
+                <option value="fiv">FIV realizada</option>
+                <option value="don">Donación ovocitaria</option>
+                <option value="preservacion">Preservación fertilidad</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ciclos FIV previos</label>
+            <input type="number" class="form-control" id="fCiclosFIV" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notas fertilidad</label>
+            <textarea class="form-control" id="fNotesFert" placeholder="Ovocitos obtenidos, embriología, resultados…"></textarea>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <div class="flex justify-between items-center">
+          <button class="btn btn-ghost" onclick="clearForm()">🗑 Limpiar</button>
+          <div class="flex gap-2">
+            <button class="btn btn-secondary" onclick="showSection('pacientes', null)">Cancelar</button>
+            <button class="btn btn-primary" onclick="savePatient()">💾 Guardar paciente</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== ALGORITMOS =================== -->
+    <div id="s-algoritmos" class="section fade-in">
+      <div class="tabs">
+        <div class="tab-item active" onclick="switchTab('algo', 0, this)">Endometriosis</div>
+        <div class="tab-item" onclick="switchTab('algo', 1, this)">Miomas</div>
+        <div class="tab-item" onclick="switchTab('algo', 2, this)">Dolor Crónico</div>
+      </div>
+
+      <div id="algoTab0">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">🔬 Algoritmo Diagnóstico (ESHRE 2022)</div></div>
+            <div class="algo-step" data-step="1">
+              <div class="algo-step-title">Triaje sintomático</div>
+              <div class="algo-step-desc">Dismenorrea · Dispareunia profunda · Disquecia · Disuria · Infertilidad · Fatiga crónica · Dolor hombro (Rec. 1 – GPP)</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="2">
+              <div class="algo-step-title">Exploración clínica + Imagen</div>
+              <div class="algo-step-desc">Ecografía TV (sens. 93%, esp. 96% endometrioma) y/o RM pélvica. No usar biomarcadores. Una imagen negativa NO descarta la enfermedad. (Rec. 4, 5)</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="3">
+              <div class="algo-step-title">Tratamiento empírico</div>
+              <div class="algo-step-desc">ACO o progestágenos antes de confirmación quirúrgica. Si responde: presunción diagnóstica (Rec. 6 – GPP)</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="4">
+              <div class="algo-step-title">Laparoscopía diagnóstica</div>
+              <div class="algo-step-desc">Solo si imagen negativa + tratamiento empírico fallido o inadecuado. Ya NO es el gold standard obligatorio. Confirmar con histología (Rec. 6, 7)</div>
+            </div>
+            <div class="info-box mt-3">
+              <div class="info-title">🧬 Nota clave ESHRE 2022</div>
+              La laparoscopía dejó de ser el estándar de oro diagnóstico. La imagen (ecografía/RM) + tratamiento empírico tienen igual o mayor valor en la mayoría de casos.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">🎯 Clasificación rASRM</div></div>
+            <div style="margin-bottom:10px">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="tag tag-green">Estadio I</span>
+                <span class="text-sm">Mínima — puntaje 1–5</span>
+              </div>
+              <div class="text-xs text-muted">Lesiones aisladas superficiales, sin adherencias</div>
+            </div>
+            <div style="margin-bottom:10px">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="tag tag-orange">Estadio II</span>
+                <span class="text-sm">Leve — puntaje 6–15</span>
+              </div>
+              <div class="text-xs text-muted">Lesiones superficiales con pocas adherencias</div>
+            </div>
+            <div style="margin-bottom:10px">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="tag tag-pink">Estadio III</span>
+                <span class="text-sm">Moderada — puntaje 16–40</span>
+              </div>
+              <div class="text-xs text-muted">Múltiples lesiones profundas, endometrioma < 2cm, adherencias peritubáricas</div>
+            </div>
+            <div style="margin-bottom:10px">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="tag tag-red">Estadio IV</span>
+                <span class="text-sm">Severa — puntaje > 40</span>
+              </div>
+              <div class="text-xs text-muted">Múltiples lesiones profundas, endometrioma > 2cm, adherencias densas, obliteración fondo de saco</div>
+            </div>
+            <hr class="divider">
+            <div class="card-title mb-2" style="font-size:15px">⚠️ Localización Endometriosis Profunda</div>
+            <div class="grid" style="grid-template-columns:1fr 1fr; gap:8px">
+              <div class="tag tag-purple" style="justify-content:center; padding:6px">Ligamentos uterosacros</div>
+              <div class="tag tag-purple" style="justify-content:center; padding:6px">Tabique rectovaginal</div>
+              <div class="tag tag-purple" style="justify-content:center; padding:6px">Vejiga / uréteres</div>
+              <div class="tag tag-purple" style="justify-content:center; padding:6px">Intestino / recto</div>
+              <div class="tag tag-purple" style="justify-content:center; padding:6px">Diafragma</div>
+              <div class="tag tag-purple" style="justify-content:center; padding:6px">Pared abdominal</div>
+            </div>
+            <div class="warn-box mt-3">
+              <div class="warn-title">⚠️ Endometriosis profunda</div>
+              Derivar a centro de excelencia (Rec. 30 – GPP). Informar sobre riesgos, beneficios y efectos a largo plazo (Rec. 31 – GPP).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="algoTab1" style="display:none">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">🔵 Algoritmo Diagnóstico Miomas (SEGO 2025)</div></div>
+            <div class="algo-step" data-step="1">
+              <div class="algo-step-title">Ecografía TV 2D (primera línea)</div>
+              <div class="algo-step-desc">Método de rutina. Alta sensibilidad. Establece número, tamaño, localización y relación con endometrio.</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="2">
+              <div class="algo-step-title">Clasificación FIGO obligatoria</div>
+              <div class="algo-step-desc">Tipos 0–8. Los tipos 0–2 (submucosos) son los que más afectan la fertilidad y causan SUA.</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="3">
+              <div class="algo-step-title">RM pélvica si indicada</div>
+              <div class="algo-step-desc">Miomas múltiples complejos, dudas diagnósticas, planificación quirúrgica, sospecha de compromiso vecinos (estasis urinario).</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="4">
+              <div class="algo-step-title">Escala STEPW (histeroscopia)</div>
+              <div class="algo-step-desc">Para miomas submucosos: determina complejidad de miomectomía histeroscópica antes de intervenir.</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="5">
+              <div class="algo-step-title">Descartar sarcoma</div>
+              <div class="algo-step-desc">Mayor vigilancia en postmenopáusicas con masas de rápido crecimiento. Biopsia si sospecha.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">📊 Clasificación FIGO</div></div>
+            <div style="overflow-x:auto">
+              <table style="width:100%; border-collapse:collapse; font-size:12.5px">
+                <tr style="background:var(--bg3)">
+                  <th style="padding:8px; text-align:left; border-bottom:1px solid var(--border)">Tipo</th>
+                  <th style="padding:8px; text-align:left; border-bottom:1px solid var(--border)">Localización</th>
+                  <th style="padding:8px; text-align:left; border-bottom:1px solid var(--border)">Impacto fertilidad</th>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="tag tag-red">0</span></td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)">Submucoso pediculado</td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="hl-red">Muy alto</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="tag tag-red">1</span></td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)">Sub < 50% intramural</td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="hl-red">Muy alto</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="tag tag-red">2</span></td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)">Sub ≥ 50% intramural</td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="hl-red">Alto</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="tag tag-orange">3</span></td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)">Intramural (contacta end.)</td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="hl-orange">Moderado</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="tag tag-orange">4</span></td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)">Intramural puro</td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="hl-orange">Moderado</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="tag tag-green">5</span></td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)">Subseroso ≥ 50% intra.</td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="hl-green">Bajo</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="tag tag-green">6</span></td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)">Subseroso < 50% intra.</td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="hl-green">Bajo</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="tag tag-green">7</span></td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)">Subseroso pediculado</td>
+                  <td style="padding:7px 8px; border-bottom:1px solid var(--border)"><span class="hl-green">Mínimo</span></td>
+                </tr>
+                <tr>
+                  <td style="padding:7px 8px"><span class="tag tag-gray">8</span></td>
+                  <td style="padding:7px 8px">Otros (cervical, parásito)</td>
+                  <td style="padding:7px 8px"><span class="text-muted">Variable</span></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="algoTab2" style="display:none">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-header"><div class="card-title">😔 Manejo Dolor Pélvico Crónico</div></div>
+            <div class="info-box mb-3">
+              <div class="info-title">🎯 Enfoque multidisciplinar</div>
+              El dolor crónico en endometriosis requiere abordaje psicológico, fisioterapia pélvica y apoyo emocional además del tratamiento médico/quirúrgico (Rec. 38 – ESHRE 2022).
+            </div>
+            <div class="algo-step" data-step="1">
+              <div class="algo-step-title">Primera línea: AINEs + Hormonal</div>
+              <div class="algo-step-desc">AINEs solos o combinados con ACO o progestágenos (Rec. 10, 13, 15)</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="2">
+              <div class="algo-step-title">Segunda línea: Agonistas/Antagonistas GnRH</div>
+              <div class="algo-step-desc">Si fallo de primera línea. Añadir add-back therapy para prevenir pérdida ósea (Rec. 18-22)</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="3">
+              <div class="algo-step-title">Refractario: Inhibidores aromatasa</div>
+              <div class="algo-step-desc">Combinados con ACO, progestágenos o GnRH. Solo cuando otras opciones han fallado (Rec. 23)</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="4">
+              <div class="algo-step-title">Cirugía para dolor</div>
+              <div class="algo-step-desc">Excisión > ablación (Rec. 25). Quistectomía > drenaje para endometrioma (Rec. 26). Centro de excelencia para ED (Rec. 30)</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">⚠️ Advertencias Clínicas Críticas</div></div>
+            <div class="warn-box mb-3">
+              <div class="warn-title">🚫 No recomendar embarazo como tratamiento</div>
+              El embarazo no cura la endometriosis. No siempre mejora los síntomas ni detiene la progresión (ESHRE Rec. 60).
+            </div>
+            <div class="warn-box mb-3">
+              <div class="warn-title">🚫 No biomarcadores para diagnóstico</div>
+              CA-125, miARN y otros biomarcadores NO están recomendados para diagnóstico de endometriosis (Rec. 4 – ESHRE 2022 ⊕⊕⊕ Fuerte).
+            </div>
+            <div class="warn-box mb-3">
+              <div class="warn-title">🚫 No supresión ovárica para fertilidad</div>
+              El tratamiento hormonal solo NO mejora las tasas de embarazo en endometriosis (Rec. 39 – ESHRE 2022).
+            </div>
+            <div class="success-box mb-3">
+              <div class="success-title">✅ Vitamina D en miomas (SEGO 2025)</div>
+              Suplementación con Vitamina D: intervención de bajo coste y bajo riesgo para reducir la carga de miomas.
+            </div>
+            <div class="success-box">
+              <div class="success-title">✅ Antagonistas GnRH: ventajas</div>
+              Relugolix y Linzagolix: acción rápida, sin efecto flare-up, opción para uso crónico con TAB integrada (SEGO 2025).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== TRATAMIENTO =================== -->
+    <div id="s-tratamiento" class="section fade-in">
+      <div class="tabs">
+        <div class="tab-item active" onclick="switchTab('tx', 0, this)">Endometriosis – Dolor</div>
+        <div class="tab-item" onclick="switchTab('tx', 1, this)">Miomas – Médico</div>
+        <div class="tab-item" onclick="switchTab('tx', 2, this)">Miomas – Quirúrgico</div>
+        <div class="tab-item" onclick="switchTab('tx', 3, this)">Postmenopausia</div>
+      </div>
+
+      <div id="txTab0">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-title mb-3">💊 Líneas de Tratamiento — Dolor Endometriosis</div>
+            <div style="border-left:3px solid var(--accent3); padding-left:12px; margin-bottom:14px">
+              <div class="fw-500 mb-1 hl-green">Primera línea</div>
+              <div class="text-sm text-muted mb-1">ACO combinados (oral, anillo vaginal, parche transdérmico) · Uso continuo si dismenorrea recurrente (Rec. 13, 14)</div>
+              <div class="text-sm text-muted">Progestágenos: dienogest, NETA, MPA, DIU-LNG, implante etonogestrel (Rec. 15, 17)</div>
+            </div>
+            <div style="border-left:3px solid var(--accent4); padding-left:12px; margin-bottom:14px">
+              <div class="fw-500 mb-1 hl-orange">Segunda línea</div>
+              <div class="text-sm text-muted mb-1">Agonistas GnRH + add-back obligatoria (NETA ± estrógenosi combinados) (Rec. 18–20)</div>
+              <div class="text-sm text-muted">Antagonistas GnRH: elagolix, relugolix, linzagolix. Efectos similares sin flare-up (Rec. 21–22)</div>
+            </div>
+            <div style="border-left:3px solid var(--danger); padding-left:12px; margin-bottom:14px">
+              <div class="fw-500 mb-1 hl-red">Refractario</div>
+              <div class="text-sm text-muted">Inhibidores aromatasa (letrozol, anastrozol) + ACO / progestágenos / GnRH. Solo tras agotar otras opciones (Rec. 23)</div>
+            </div>
+            <div style="border-left:3px solid var(--text3); padding-left:12px">
+              <div class="fw-500 mb-1">Coadyuvantes</div>
+              <div class="text-sm text-muted">AINEs para analgesia. Apoyo psicológico. Fisioterapia pélvica (Rec. 10, 38)</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title mb-3">🔪 Tratamiento Quirúrgico — Endometriosis</div>
+            <div class="success-box mb-3">
+              <div class="success-title">✅ Principios clave</div>
+              <ul style="padding-left:16px; font-size:13px; line-height:2">
+                <li>Excisión > Ablación para dolor (Rec. 25 – ⊕⊕)</li>
+                <li>Quistectomía > Drenaje para endometrioma (Rec. 26 – ⊕⊕ Fuerte)</li>
+                <li>Ambas técnicas válidas: quistectomía y vaporización CO₂ (Rec. 27)</li>
+                <li>Preservar tejido ovárico en la cirugía (Rec. 28 – ⊕ Fuerte)</li>
+                <li>Centro de excelencia para endometriosis profunda (Rec. 30)</li>
+              </ul>
+            </div>
+            <div class="warn-box mb-3">
+              <div class="warn-title">⚠️ Pre/postoperatorio</div>
+              <div class="text-sm">No se recomienda tratamiento hormonal preoperatorio para mejorar resultados quirúrgicos (Rec. 35 – ⊕⊕ Fuerte). SÍ se puede ofrecer postoperatorio si no desea gestación inmediata (Rec. 36).</div>
+            </div>
+            <div class="info-box">
+              <div class="info-title">📌 Prevención de recurrencia</div>
+              <div class="text-sm">LNG-IUS 52mg o ACO durante al menos 18–24 meses tras cirugía para prevenir recurrencia de dismenorrea (Rec. 65 – ⊕⊕ Fuerte).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="txTab1" style="display:none">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-title mb-3">💊 Tratamiento Médico Miomas (SEGO 2025)</div>
+            <div style="border-left:3px solid var(--text3); padding-left:12px; margin-bottom:16px">
+              <div class="fw-500 mb-1">Sintomáticos (control de sangrado)</div>
+              <div class="text-sm text-muted">AINEs · Ácido tranexámico · Sin efecto sobre volumen del mioma</div>
+            </div>
+            <div style="border-left:3px solid var(--accent4); padding-left:12px; margin-bottom:16px">
+              <div class="fw-500 mb-1 hl-orange">Antagonistas GnRH — Primera línea específica 2025</div>
+              <div class="card" style="background:var(--bg3); padding:12px; margin-top:8px; border:1px solid var(--border)">
+                <div class="flex items-center gap-2 mb-2"><span class="tag tag-orange">Relugolix 40mg</span></div>
+                <div class="text-sm text-muted">+ Terapia hormonal add-back (estradiol 1mg + NETA 0.5mg) integrada. Uso crónico > 6 meses aprobado.</div>
+              </div>
+              <div class="card" style="background:var(--bg3); padding:12px; margin-top:8px; border:1px solid var(--border)">
+                <div class="flex items-center gap-2 mb-2"><span class="tag tag-purple">Linzagolix</span></div>
+                <div class="text-sm text-muted">100mg: uso crónico. 200mg con TAB: > 6 meses. 200mg sin TAB: reducción volumen < 6 meses.</div>
+              </div>
+              <div class="success-box mt-2">
+                <div class="success-title">✅ Ventajas antagonistas GnRH</div>
+                <div class="text-sm">Acción rápida sobre sangrado y dolor. Sin efecto flare-up. Sin hipoestrogenismo si se usa TAB integrada.</div>
+              </div>
+            </div>
+            <div style="border-left:3px solid var(--accent3); padding-left:12px">
+              <div class="fw-500 mb-1 hl-green">Manejo SUA sin gestación deseada</div>
+              <div class="text-sm text-muted">DIU-LNG (si cavidad no distorsionada) · ACO · Relugolix/Linzagolix para control rápido y reducción volumen</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title mb-3">🌿 Vitamina D & Prevención (SEGO 2025)</div>
+            <div class="success-box mb-3">
+              <div class="success-title">✅ Vitamina D — Recomendación SEGO 2025</div>
+              Suplementación como intervención de bajo coste y bajo riesgo. Evidencia creciente sobre reducción de carga de miomas y modulación del crecimiento.
+            </div>
+            <div class="card-title mb-2" style="font-size:15px; margin-top:16px">📋 Manejo Expectante</div>
+            <div class="info-box mb-3">
+              <div class="info-title">🕐 Seguimiento asintomático</div>
+              Crecimiento significativo = > 25% volumen en 6–12 meses. Alta médica si no hay cambios en 6–12 meses. Si asintomática: manejo expectante sin intervención.
+            </div>
+            <div class="card-title mb-2" style="font-size:15px; margin-top:16px">🩸 Anemia por SUA</div>
+            <div class="warn-box">
+              <div class="warn-title">⚠️ Optimización prequirúrgica</div>
+              Los antagonistas GnRH permiten recuperación de hemoglobina y reducción del volumen antes de cirugía. Objetivo Hgb > 12 g/dL antes de miomectomía mayor.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="txTab2" style="display:none">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-title mb-3">🔪 Cirugía Miomas — Selección</div>
+            <div class="algo-step" data-step="1">
+              <div class="algo-step-title">Histeroscopia — Miomas submucosos (0, 1, 2 y 3 seleccionados)</div>
+              <div class="algo-step-desc">Elección para tipos 0–2. Evaluación con escala STEPW previa. Para tipo 3: casos seleccionados.</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="2">
+              <div class="algo-step-title">Miomectomía laparoscópica</div>
+              <div class="algo-step-desc">Preferida sobre laparotómica por mejor recuperación. Miomas intramurales ≥ 4 cm con deseo gestacional.</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="3">
+              <div class="algo-step-title">Miomectomía abdominal</div>
+              <div class="algo-step-desc">Si laparoscopía no disponible o miomas múltiples de gran tamaño. Igual eficacia, mayor recuperación.</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="4">
+              <div class="algo-step-title">Ablación Térmica (HIFU / Radiofrecuencia)</div>
+              <div class="algo-step-desc">Para miomas < 6 cm. La radiofrecuencia guiada es segura a nivel obstétrico. Sin cicatriz uterina.</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="5">
+              <div class="algo-step-title">Histerectomía</div>
+              <div class="algo-step-desc">Solo si no desea más gestaciones y otras opciones fallaron. Elimina definitivamente los miomas.</div>
+            </div>
+            <div class="warn-box mt-3">
+              <div class="warn-title">🚫 Embolización (EAU)</div>
+              Contraindicada en pacientes que desean gestación: riesgo de complicaciones obstétricas y reducción de reserva ovárica (SEGO 2025).
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title mb-3">📐 Escala STEPW (Histeroscopia)</div>
+            <div class="info-box mb-3">
+              <div class="info-title">📊 Sistema STEPW</div>
+              Determina la complejidad de la miomectomía histeroscópica antes de la intervención. Predice necesidad de 1 vs 2 tiempos quirúrgicos.
+            </div>
+            <div style="overflow-x:auto">
+              <table style="width:100%; border-collapse:collapse; font-size:12px">
+                <tr style="background:var(--bg3)">
+                  <th style="padding:7px; text-align:left; border-bottom:1px solid var(--border)">Parámetro</th>
+                  <th style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">0 pts</th>
+                  <th style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">1 pt</th>
+                  <th style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">2 pts</th>
+                </tr>
+                <tr><td style="padding:7px; border-bottom:1px solid var(--border)"><strong>S</strong>ize (tamaño)</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">< 2cm</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">2–5cm</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">> 5cm</td></tr>
+                <tr><td style="padding:7px; border-bottom:1px solid var(--border)"><strong>T</strong>opografía</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">Bajo</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">Medio</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">Fúndico</td></tr>
+                <tr><td style="padding:7px; border-bottom:1px solid var(--border)"><strong>E</strong>xtensión intramural</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">0%</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">1–50%</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">> 50%</td></tr>
+                <tr><td style="padding:7px; border-bottom:1px solid var(--border)"><strong>P</strong>enetración</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">Tipo 0</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">Tipo 1</td><td style="padding:7px; text-align:center; border-bottom:1px solid var(--border)">Tipo 2</td></tr>
+                <tr><td style="padding:7px"><strong>W</strong>all (pared lateral)</td><td style="padding:7px; text-align:center">No</td><td style="padding:7px; text-align:center">—</td><td style="padding:7px; text-align:center">Sí</td></tr>
+              </table>
+            </div>
+            <div class="grid" style="grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px">
+              <div class="card" style="padding:10px; text-align:center; border-color:var(--accent3)">
+                <div style="color:var(--accent3); font-weight:700">0–4</div>
+                <div class="text-xs">Bajo riesgo. 1 tiempo.</div>
+              </div>
+              <div class="card" style="padding:10px; text-align:center; border-color:var(--accent4)">
+                <div style="color:var(--accent4); font-weight:700">5–6</div>
+                <div class="text-xs">Riesgo intermedio</div>
+              </div>
+              <div class="card" style="padding:10px; text-align:center; border-color:var(--danger)">
+                <div style="color:var(--danger); font-weight:700">7–9</div>
+                <div class="text-xs">Alto riesgo. Posible 2 tiempos.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="txTab3" style="display:none">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-title mb-3">🍂 Endometriosis Postmenopáusica (ESHRE 2022)</div>
+            <div class="warn-box mb-3">
+              <div class="warn-title">⚠️ La endometriosis puede ser activa tras la menopausia</div>
+              2–5% prevalencia en postmenopáusicas. Vigilancia mayor por riesgo de transformación maligna (clear cell, endometroide).
+            </div>
+            <div class="algo-step" data-step="1">
+              <div class="algo-step-title">Detección de masa pélvica</div>
+              <div class="algo-step-desc">Seguir protocolos oncológicos nacionales. Alta incertidumbre de malignidad (Rec. 88 – GPP).</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="2">
+              <div class="algo-step-title">Tratamiento quirúrgico</div>
+              <div class="algo-step-desc">Para confirmar histológicamente y tratar dolor. Se puede considerar cirugía laparoscópica (Rec. 87).</div>
+            </div>
+            <div class="algo-connector"></div>
+            <div class="algo-step" data-step="3">
+              <div class="algo-step-title">Inhibidores aromatasa</div>
+              <div class="algo-step-desc">Si cirugía no factible. Bloquean producción de estrógenos extraováricos (Rec. 89).</div>
+            </div>
+            <hr class="divider">
+            <div class="card-title mb-2" style="font-size:15px">🧬 THS en historia de endometriosis</div>
+            <div class="warn-box mb-2">
+              <div class="warn-title">🚫 NO usar estrógenos solos</div>
+              Riesgo de transformación maligna. Evitar en mujeres con historia de endometriosis (Rec. 91 – ⊕⊕ Fuerte).
+            </div>
+            <div class="success-box">
+              <div class="success-title">✅ THS combinada estrógenoi + progestágeno</div>
+              Mantener al menos hasta la edad de menopausia natural si fue menopáusica quirúrgica. El riesgo es mínimo con combinada continua (Rec. 90, 92).
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title mb-3">🎗 Endometriosis & Cáncer (ESHRE 2022)</div>
+            <div class="info-box mb-3">
+              <div class="info-title">📊 Riesgo absoluto (Rec. 104)</div>
+              <div class="text-sm">
+                <div class="flex justify-between" style="margin-bottom:6px"><span>Ca. ovario:</span><span>General 1.3% → Con endo 2.5% <span class="hl-orange">(+1.2%)</span></span></div>
+                <div class="flex justify-between" style="margin-bottom:6px"><span>Ca. mama:</span><span>General 12.8% → Con endo 13.3% <span class="hl-orange">(+0.5%)</span></span></div>
+                <div class="flex justify-between"><span>Ca. tiroides:</span><span>General 1.3% → Con endo 1.8% <span class="hl-orange">(+0.5%)</span></span></div>
+              </div>
+            </div>
+            <div class="success-box mb-3">
+              <div class="success-title">✅ Tranquilizar a las pacientes</div>
+              El aumento de riesgo absoluto es bajo. No se recomienda screening de cáncer adicional más allá de los programas poblacionales estándar (Rec. 107 – ⊕⊕ Fuerte).
+            </div>
+            <div class="info-box mb-3">
+              <div class="info-title">🔬 Cirugía y reducción de riesgo</div>
+              La escisión completa de endometriosis visible puede reducir el riesgo de cáncer de ovario. Beneficios vs riesgos quirúrgicos (Rec. 109 – ⊕⊕ Fuerte).
+            </div>
+            <div class="warn-box">
+              <div class="warn-title">⚠️ ACO y riesgo oncológico</div>
+              <div class="text-sm">ACO reducen riesgo de Ca. ovario y endometrial. Aumentan levemente Ca. mama y cervical. El balance neto es generalmente favorable (Rec. 106).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== FERTILIDAD =================== -->
+    <div id="s-fertilidad" class="section fade-in">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-title mb-3">🌱 Endometriosis e Infertilidad (ESHRE 2022)</div>
+          <div class="warn-box mb-3">
+            <div class="warn-title">🚫 No supresión ovárica aislada</div>
+            La supresión ovárica hormonal sola (ACO, agonistas GnRH, progestágenos) NO mejora las tasas de fertilidad (Rec. 39 – ⊕⊕ Fuerte).
+          </div>
+          <div class="algo-step" data-step="1">
+            <div class="algo-step-title">Calcular Índice EFI</div>
+            <div class="algo-step-desc">Endometriosis Fertility Index (EFI): score 0–10 al final de la cirugía. Predice tasa de embarazo no-TRA postoperatoria. Es validado, reproducible y coste-efectivo (Rec. GDG Statement).</div>
+          </div>
+          <div class="algo-connector"></div>
+          <div class="algo-step" data-step="2">
+            <div class="algo-step-title">EFI ≥ 7 → Intento natural / IUI</div>
+            <div class="algo-step-desc">IUI con estimulación ovárica vs. manejo expectante. Aumenta tasa de embarazo en estadio I/II (Rec. 47 – ⊕). Considerar hasta 6 meses postcirugía.</div>
+          </div>
+          <div class="algo-connector"></div>
+          <div class="algo-step" data-step="3">
+            <div class="algo-step-title">EFI < 7 → Considerar TRA (FIV/ICSI)</div>
+            <div class="algo-step-desc">Especialmente si factor tubárico, factor masculino, EFI bajo o fracaso de otros tratamientos (Rec. 49 – ⊕⊕).</div>
+          </div>
+          <div class="info-box mt-3">
+            <div class="info-title">📌 GnRH antagonistas vs agonistas en FIV</div>
+            No hay diferencia demostrada en tasa de gestación o nacido vivo entre protocolos agonista y antagonista en endometriosis (Rec. 50 – ⊕ Débil).
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title mb-3">🔵 Miomas e Infertilidad (SEGO 2025 + ESHRE)</div>
+          <div class="success-box mb-3">
+            <div class="success-title">✅ Acción inmediata — Miomas submucosos (0–2)</div>
+            Miomectomía histeroscópica OBLIGATORIA antes de cualquier intento de concepción o TRA (Algoritmo App – SEGO 2025).
+          </div>
+          <div class="info-box mb-3">
+            <div class="info-title">💊 Mioma intramural > 4 cm con deseo gestacional</div>
+            Considerar pretratamiento con antagonistas GnRH 3 meses para optimizar entorno uterino antes de búsqueda o transferencia embrionaria.
+          </div>
+          <div class="warn-box mb-3">
+            <div class="warn-title">🚫 EAU contraindicada si desea gestación</div>
+            Riesgo de amenorrea, complicaciones obstétricas y reducción de reserva ovárica (SEGO 2025).
+          </div>
+          <hr class="divider">
+          <div class="card-title mb-2" style="font-size:15px">🥚 Preservación de Fertilidad</div>
+          <div class="info-box mb-2">
+            <div class="info-title">📌 ESHRE Rec. 59 — Endometriosis ovárica extensa</div>
+            Discutir pros y cons de criopreservación ovocitaria/embrionaria. Beneficio real aún desconocido. Informar siempre.
+          </div>
+          <div class="success-box">
+            <div class="success-title">✅ Si preservación de fertilidad: ANTES de cirugía ovárica</div>
+            En mujeres ≤ 35 años: criopreservar ANTES de intervenir quirúrgicamente el ovario para mejores resultados (Cobo et al. 2020 – CLBR 46.4%).
+          </div>
+        </div>
+      </div>
+
+      <!-- EFI Calculator -->
+      <div class="card mt-4">
+        <div class="card-title mb-3">📏 Calculadora EFI (Endometriosis Fertility Index)</div>
+        <div class="grid grid-2">
+          <div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Edad (años)</label>
+                <select class="form-control" id="efiAge" onchange="calcEFI()">
+                  <option value="2">< 35 años</option>
+                  <option value="1">35–39 años</option>
+                  <option value="0">≥ 40 años</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Duración infertilidad</label>
+                <select class="form-control" id="efiDuration" onchange="calcEFI()">
+                  <option value="2">< 3 años</option>
+                  <option value="1">≥ 3 años</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Historia de embarazo previo</label>
+              <select class="form-control" id="efiPregnancy" onchange="calcEFI()">
+                <option value="1">Sí</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Función mínima tubárico/ovárica (peor lado)</label>
+              <select class="form-control" id="efiFunctionMin" onchange="calcEFI()">
+                <option value="4">Normal (4)</option>
+                <option value="3">Leve (3)</option>
+                <option value="2">Moderada (2)</option>
+                <option value="1">Severa (1)</option>
+                <option value="0">Ausente (0)</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Estadio rASRM lesiones</label>
+                <select class="form-control" id="efiStage" onchange="calcEFI()">
+                  <option value="1">Estadio I–II (1)</option>
+                  <option value="0">Estadio III–IV (0)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Puntos totales rASRM</label>
+                <select class="form-control" id="efiTotal" onchange="calcEFI()">
+                  <option value="1">< 16 puntos (1)</option>
+                  <option value="0">≥ 16 puntos (0)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px">
+            <div class="score-circle" id="efiCircle" style="border-color:var(--accent3); width:100px; height:100px">
+              <div class="score-num" id="efiScore">—</div>
+              <div class="score-label">EFI</div>
+            </div>
+            <div id="efiInterpret" class="text-sm text-muted text-center mt-3" style="max-width:200px">Complete los campos para calcular el EFI</div>
+            <div id="efiRec" class="info-box mt-3" style="text-align:center; display:none"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== SCORES =================== -->
+    <div id="s-scores" class="section fade-in">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-title mb-3">📏 Escala EVA — Dolor Pélvico</div>
+          <div class="form-group">
+            <label class="form-label">Tipo de dolor a evaluar</label>
+            <select class="form-control" id="evaTipo">
+              <option>Dismenorrea</option>
+              <option>Dolor pélvico crónico</option>
+              <option>Dispareunia</option>
+              <option>Disquecia</option>
+              <option>Disuria</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Puntuación EVA</label>
+            <input type="range" id="evaSlider" min="0" max="10" value="5" class="form-control" style="padding:6px" oninput="updateEVA()">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text3); margin-top:2px">
+              <span>0 – Sin dolor</span><span>5 – Moderado</span><span>10 – Insoportable</span>
+            </div>
+          </div>
+          <div id="evaResult" class="card mt-3" style="text-align:center; padding:16px; border-color:var(--accent3)">
+            <div style="font-size:48px; font-family:'DM Serif Display'; color:var(--accent3)" id="evaNum">5</div>
+            <div id="evaLabel" class="text-sm">Dolor moderado</div>
+            <div id="evaColor" class="risk-bar mt-2" style="width:100%"><div class="risk-fill risk-mid" id="evaBar" style="width:50%"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title mb-3">📊 Score BIBEROGLU & BEHRMAN (Síntomas)</div>
+          <div class="text-xs text-muted mb-3">0=ausente, 1=leve, 2=moderado, 3=severo</div>
+          <div class="form-group">
+            <label class="form-label">Dismenorrea</label>
+            <select class="form-control" id="bb1" onchange="calcBB()"><option value="0">0 – Ausente</option><option value="1">1 – Leve</option><option value="2">2 – Moderada</option><option value="3">3 – Severa</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dolor pélvico no menstrual</label>
+            <select class="form-control" id="bb2" onchange="calcBB()"><option value="0">0 – Ausente</option><option value="1">1 – Leve</option><option value="2">2 – Moderado</option><option value="3">3 – Severo</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dispareunia</label>
+            <select class="form-control" id="bb3" onchange="calcBB()"><option value="0">0 – Ausente</option><option value="1">1 – Leve</option><option value="2">2 – Moderada</option><option value="3">3 – Severa</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Disquecia/Disuria</label>
+            <select class="form-control" id="bb4" onchange="calcBB()"><option value="0">0 – Ausente</option><option value="1">1 – Leve</option><option value="2">2 – Moderada</option><option value="3">3 – Severa</option></select>
+          </div>
+          <div class="card mt-2" style="padding:14px; display:flex; align-items:center; gap:16px">
+            <div class="score-circle" id="bbCircle" style="border-color:var(--accent3); width:70px; height:70px">
+              <div class="score-num" id="bbScore" style="font-size:20px">0</div>
+              <div class="score-label">/ 12</div>
+            </div>
+            <div id="bbInterpret" class="text-sm">Escala de síntomas: sin afectación</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== GUÍAS =================== -->
+    <div id="s-guias" class="section fade-in">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">📋 ESHRE 2022 — Resumen Ejecutivo</div><div class="card-subtitle">Guideline Endometriosis</div></div>
+            <span class="tag tag-purple">2022</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Diagnóstico</div><div class="timeline-content">Imagen (US/RM) como primera línea. No biomarcadores. Laparoscopía: solo si imagen negativa + empírico fallido.</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Tratamiento dolor</div><div class="timeline-content">1ª línea: ACO / progestágenos. 2ª línea: GnRH agonistas o antagonistas. Refractario: Inhibidores aromatasa.</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Cirugía</div><div class="timeline-content">Excisión > ablación. Quistectomía > drenaje. Centro excelencia para ED profunda.</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Fertilidad</div><div class="timeline-content">No supresión ovárica. EFI post-cirugía. FIV si factor tubárico/masculino o EFI bajo.</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Recurrencia</div><div class="timeline-content">LNG-IUS o ACO ≥ 18–24 meses post-cirugía. Hormonal o quirúrgico para dolor recurrente.</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Adolescentes</div><div class="timeline-content">ACO/progestágenos primera línea. GnRH agonistas con add-back como segunda línea.</div></div>
+            <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">Cáncer</div><div class="timeline-content">Riesgo absoluto bajo. No screening adicional. Informar objetivamente.</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">📋 SEGO 2025 — Miomas Uterinos</div><div class="card-subtitle">Guía española actualizada</div></div>
+            <span class="tag tag-orange">2025</span>
+          </div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-dot" style="border-color:var(--accent4)"></div><div class="timeline-date">Prevención</div><div class="timeline-content">Vitamina D: bajo coste, bajo riesgo, reducción de carga de miomas. Recomendación 2025.</div></div>
+            <div class="timeline-item"><div class="timeline-dot" style="border-color:var(--accent4)"></div><div class="timeline-date">Diagnóstico</div><div class="timeline-content">Clasificación FIGO obligatoria. Ecografía TV 2D como rutina. RM solo si dudas o múltiples. Escala STEPW para histeroscopia.</div></div>
+            <div class="timeline-item"><div class="timeline-dot" style="border-color:var(--accent4)"></div><div class="timeline-date">Nuevo tratamiento médico</div><div class="timeline-content">Relugolix 40mg + TAB integrada: uso crónico > 6 meses. Linzagolix 100mg: crónico. 200mg ± TAB: distintos escenarios.</div></div>
+            <div class="timeline-item"><div class="timeline-dot" style="border-color:var(--accent4)"></div><div class="timeline-date">SUA sin gestación</div><div class="timeline-content">DIU-LNG si cavidad no distorsionada. ACO. Antagonistas GnRH para control rápido y reducción volumen.</div></div>
+            <div class="timeline-item"><div class="timeline-dot" style="border-color:var(--accent4)"></div><div class="timeline-date">Cirugía</div><div class="timeline-content">Histeroscopia: tipos 0–2. Laparoscopia preferida sobre laparotomía. HIFU/RF para < 6 cm.</div></div>
+            <div class="timeline-item"><div class="timeline-dot" style="border-color:var(--accent4)"></div><div class="timeline-date">Fertilidad</div><div class="timeline-content">Tipos 0–2: histeroscopia obligatoria. > 4cm intramural: GnRH 3 meses preconcepcional. EAU contraindicada.</div></div>
+            <div class="timeline-item"><div class="timeline-dot" style="border-color:var(--accent4)"></div><div class="timeline-date">Vigilancia</div><div class="timeline-content">Crecimiento significativo = > 25% volumen/6 meses. Mayor alerta en postmenopáusicas. Descartar sarcoma.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =================== INFORMES =================== -->
+    <div id="s-informes" class="section fade-in">
+      <div class="card mb-3">
+        <div class="card-header">
+          <div><div class="card-title">📄 Generador de Informes</div><div class="card-subtitle">Basado en datos clínicos registrados</div></div>
+        </div>
+        <div class="form-row mb-3">
+          <div class="form-group">
+            <label class="form-label">Seleccionar paciente</label>
+            <select class="form-control" id="reportPatientSelect">
+              <option value="">— Seleccionar —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo de informe</label>
+            <select class="form-control" id="reportType">
+              <option value="clinico">Informe Clínico Completo</option>
+              <option value="dx">Informe Diagnóstico</option>
+              <option value="tx">Plan de Tratamiento</option>
+              <option value="fert">Informe de Fertilidad</option>
+              <option value="derivacion">Informe de Derivación</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn btn-primary" onclick="generateReport()">📄 Generar Informe</button>
+          <button class="btn btn-secondary" onclick="printReport()">🖨️ Imprimir</button>
+        </div>
+      </div>
+      <div id="reportOutput" class="card" style="display:none">
+        <div id="reportContent"></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- MODAL: Ver Paciente -->
+<div class="modal-overlay" id="patientModal">
+  <div class="modal" style="max-width:760px">
+    <div class="modal-header">
+      <div class="modal-title" id="modalPatientName">Paciente</div>
+      <div class="flex gap-2">
+        <button class="btn btn-secondary btn-sm" onclick="editPatient()">✏️ Editar</button>
+        <button class="btn btn-ghost btn-icon" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" id="modalPatientBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" onclick="generateReportFromModal()">📄 Generar informe</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteCurrentPatient()">🗑 Eliminar</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// DATA STORE
+// ============================================================
+let patients = JSON.parse(localStorage.getItem('gineco_patients') || '[]');
+let currentPatientId = null;
+let editingPatientId = null;
+
+function saveData() {
+  localStorage.setItem('gineco_patients', JSON.stringify(patients));
+  updateStats();
+  updateBadges();
+}
+
+function genId() { return 'p_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); }
+
+// ============================================================
+// NAV
+// ============================================================
+const sectionTitles = {
+  dashboard: 'Dashboard', pacientes: 'Pacientes', nueva: 'Nueva Paciente',
+  algoritmos: 'Algoritmos Diagnósticos', tratamiento: 'Protocolos de Tratamiento',
+  fertilidad: 'Fertilidad', scores: 'Escalas & Scores', guias: 'Guías 2025', informes: 'Informes Clínicos'
+};
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('s-' + id);
+  if (el) { el.classList.add('active'); void el.offsetWidth; el.classList.add('fade-in'); }
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('topbarTitle').textContent = sectionTitles[id] || id;
+  closeSidebar();
+  if (id === 'pacientes') renderPatientList();
+  if (id === 'dashboard') { updateStats(); renderDashRecent(); }
+  if (id === 'informes') populateReportSelect();
+  if (id === 'nueva' && !editingPatientId) clearForm();
+}
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('mobileOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('mobileOverlay').classList.remove('open');
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchFormTab(n, btn) {
+  for (let i = 0; i <= 4; i++) {
+    document.getElementById('formTab' + i).style.display = i === n ? 'block' : 'none';
+  }
+  document.querySelectorAll('#formTabs .tab-item').forEach((t, i) => t.classList.toggle('active', i === n));
+}
+function switchTab(prefix, n, btn) {
+  const parent = btn.closest('.tabs');
+  parent.querySelectorAll('.tab-item').forEach((t, i) => t.classList.toggle('active', i === n));
+  // find sibling divs
+  const container = parent.nextElementSibling;
+  let div = parent.nextElementSibling;
+  let i = 0;
+  while (div) {
+    if (div.id && div.id.startsWith(prefix + 'Tab')) {
+      div.style.display = i === n ? 'block' : 'none';
+      i++;
+    }
+    div = div.nextElementSibling;
+  }
+}
+// init algo tabs
+document.addEventListener('DOMContentLoaded', () => {
+  ['algoTab1','algoTab2'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
+  ['txTab1','txTab2','txTab3'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
+  updateStats(); updateBadges(); calcEFI(); calcBB(); updateEVA();
+});
+
+// ============================================================
+// CHIPS
+// ============================================================
+function toggleChip(el) { el.classList.toggle('selected'); }
+function getChips(containerId) {
+  return Array.from(document.querySelectorAll('#' + containerId + ' .chip.selected')).map(c => c.textContent.trim());
+}
+function setChips(containerId, values) {
+  document.querySelectorAll('#' + containerId + ' .chip').forEach(c => {
+    c.classList.toggle('selected', values.includes(c.textContent.trim()));
+  });
+}
+
+// ============================================================
+// FORM
+// ============================================================
+function updateDxFields() {
+  const v = document.getElementById('fDx').value;
+  document.getElementById('endoFields').style.display = (v === 'endometriosis' || v === 'ambas') ? 'block' : 'none';
+  document.getElementById('miomaFields').style.display = (v === 'miomas' || v === 'ambas') ? 'block' : 'none';
+}
+function clearForm() {
+  editingPatientId = null;
+  ['fNombre','fNHC','fTelefono','fIMC','fMenarquia','fParidad','fTiempoInfert',
+   'fCiclosFIV','fNotesDx','fNotesFert','fPlanTx','fObsSint','fTamEndometrioma','fTamMioma','fVolUterino','fHgb','fAMH'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['fFechaNac','fFechaDx','fProxRevision'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['fEstadoCivil','fAnticonc','fDeseoGestacion','fDx','fASRM','fMetodoDx','fAdenomiosis',
+   'fFIGO','fNumMiomas','fDistorsion','fEstadoTx','fRespTx','fDuracion','fDemora',
+   'fFactorMasc','fPermeabilidad','fTRA','fEFI'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.selectedIndex = 0;
+  });
+  ['chipAntFam','chipSintomas','chipLocEndo','chipSintMioma','chipTxMedico','chipTxQx'].forEach(id => {
+    document.querySelectorAll('#' + id + ' .chip').forEach(c => c.classList.remove('selected'));
+  });
+  document.getElementById('evaDismenorrea').value = 0;
+  document.getElementById('evaDismenorreaVal').textContent = 0;
+  document.getElementById('evaDolor').value = 0;
+  document.getElementById('evaDolorVal').textContent = 0;
+  updateDxFields();
+  switchFormTab(0, null);
+}
+function getFormData() {
+  return {
+    id: editingPatientId || genId(),
+    nombre: document.getElementById('fNombre').value.trim(),
+    nhc: document.getElementById('fNHC').value.trim(),
+    fechaNac: document.getElementById('fFechaNac').value,
+    estadoCivil: document.getElementById('fEstadoCivil').value,
+    telefono: document.getElementById('fTelefono').value,
+    imc: document.getElementById('fIMC').value,
+    menarquia: document.getElementById('fMenarquia').value,
+    paridad: document.getElementById('fParidad').value,
+    anticoncepcion: document.getElementById('fAnticonc').value,
+    deseoGestacion: document.getElementById('fDeseoGestacion').value,
+    antFam: getChips('chipAntFam'),
+    sintomas: getChips('chipSintomas'),
+    evaDismenorrea: document.getElementById('evaDismenorrea').value,
+    evaDolor: document.getElementById('evaDolor').value,
+    duracion: document.getElementById('fDuracion').value,
+    demora: document.getElementById('fDemora').value,
+    obsSint: document.getElementById('fObsSint').value,
+    dx: document.getElementById('fDx').value,
+    fechaDx: document.getElementById('fFechaDx').value,
+    asrm: document.getElementById('fASRM').value,
+    metodoDx: document.getElementById('fMetodoDx').value,
+    locEndo: getChips('chipLocEndo'),
+    tamEndometrioma: document.getElementById('fTamEndometrioma').value,
+    adenomiosis: document.getElementById('fAdenomiosis').value,
+    figo: document.getElementById('fFIGO').value,
+    numMiomas: document.getElementById('fNumMiomas').value,
+    tamMioma: document.getElementById('fTamMioma').value,
+    volUterino: document.getElementById('fVolUterino').value,
+    distorsion: document.getElementById('fDistorsion').value,
+    sintMioma: getChips('chipSintMioma'),
+    hgb: document.getElementById('fHgb').value,
+    amh: document.getElementById('fAMH').value,
+    notesDx: document.getElementById('fNotesDx').value,
+    estadoTx: document.getElementById('fEstadoTx').value,
+    txMedico: getChips('chipTxMedico'),
+    txQx: getChips('chipTxQx'),
+    respTx: document.getElementById('fRespTx').value,
+    proxRevision: document.getElementById('fProxRevision').value,
+    planTx: document.getElementById('fPlanTx').value,
+    tiempoInfert: document.getElementById('fTiempoInfert').value,
+    factorMasc: document.getElementById('fFactorMasc').value,
+    permeabilidad: document.getElementById('fPermeabilidad').value,
+    efi: document.getElementById('fEFI').value,
+    tra: document.getElementById('fTRA').value,
+    ciclosFIV: document.getElementById('fCiclosFIV').value,
+    notesFert: document.getElementById('fNotesFert').value,
+    createdAt: editingPatientId ? (patients.find(p=>p.id===editingPatientId)||{}).createdAt || new Date().toISOString() : new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+}
+function savePatient() {
+  const data = getFormData();
+  if (!data.nombre) { showToast('El nombre es obligatorio', 'error'); return; }
+  if (editingPatientId) {
+    const idx = patients.findIndex(p => p.id === editingPatientId);
+    if (idx >= 0) patients[idx] = data;
+    showToast('Paciente actualizada correctamente ✓', 'success');
+  } else {
+    patients.unshift(data);
+    showToast('Paciente registrada correctamente ✓', 'success');
+  }
+  saveData();
+  editingPatientId = null;
+  showSection('pacientes', document.querySelectorAll('.nav-item')[1]);
+}
+function fillForm(p) {
+  editingPatientId = p.id;
+  document.getElementById('fNombre').value = p.nombre || '';
+  document.getElementById('fNHC').value = p.nhc || '';
+  document.getElementById('fFechaNac').value = p.fechaNac || '';
+  document.getElementById('fEstadoCivil').value = p.estadoCivil || '';
+  document.getElementById('fTelefono').value = p.telefono || '';
+  document.getElementById('fIMC').value = p.imc || '';
+  document.getElementById('fMenarquia').value = p.menarquia || '';
+  document.getElementById('fParidad').value = p.paridad || '';
+  document.getElementById('fAnticonc').value = p.anticoncepcion || '';
+  document.getElementById('fDeseoGestacion').value = p.deseoGestacion || 'no';
+  setChips('chipAntFam', p.antFam || []);
+  setChips('chipSintomas', p.sintomas || []);
+  document.getElementById('evaDismenorrea').value = p.evaDismenorrea || 0;
+  document.getElementById('evaDismenorreaVal').textContent = p.evaDismenorrea || 0;
+  document.getElementById('evaDolor').value = p.evaDolor || 0;
+  document.getElementById('evaDolorVal').textContent = p.evaDolor || 0;
+  document.getElementById('fDuracion').value = p.duracion || '';
+  document.getElementById('fDemora').value = p.demora || '';
+  document.getElementById('fObsSint').value = p.obsSint || '';
+  document.getElementById('fDx').value = p.dx || '';
+  updateDxFields();
+  document.getElementById('fFechaDx').value = p.fechaDx || '';
+  document.getElementById('fASRM').value = p.asrm || '';
+  document.getElementById('fMetodoDx').value = p.metodoDx || '';
+  setChips('chipLocEndo', p.locEndo || []);
+  document.getElementById('fTamEndometrioma').value = p.tamEndometrioma || '';
+  document.getElementById('fAdenomiosis').value = p.adenomiosis || '';
+  document.getElementById('fFIGO').value = p.figo || '';
+  document.getElementById('fNumMiomas').value = p.numMiomas || '1';
+  document.getElementById('fTamMioma').value = p.tamMioma || '';
+  document.getElementById('fVolUterino').value = p.volUterino || '';
+  document.getElementById('fDistorsion').value = p.distorsion || 'No';
+  setChips('chipSintMioma', p.sintMioma || []);
+  document.getElementById('fHgb').value = p.hgb || '';
+  document.getElementById('fAMH').value = p.amh || '';
+  document.getElementById('fNotesDx').value = p.notesDx || '';
+  document.getElementById('fEstadoTx').value = p.estadoTx || 'ninguno';
+  setChips('chipTxMedico', p.txMedico || []);
+  setChips('chipTxQx', p.txQx || []);
+  document.getElementById('fRespTx').value = p.respTx || '';
+  document.getElementById('fProxRevision').value = p.proxRevision || '';
+  document.getElementById('fPlanTx').value = p.planTx || '';
+  document.getElementById('fTiempoInfert').value = p.tiempoInfert || '';
+  document.getElementById('fFactorMasc').value = p.factorMasc || '';
+  document.getElementById('fPermeabilidad').value = p.permeabilidad || '';
+  document.getElementById('fEFI').value = p.efi || '';
+  document.getElementById('fTRA').value = p.tra || 'ninguna';
+  document.getElementById('fCiclosFIV').value = p.ciclosFIV || '';
+  document.getElementById('fNotesFert').value = p.notesFert || '';
+}
+function editPatient() {
+  const p = patients.find(pt => pt.id === currentPatientId);
+  if (!p) return;
+  fillForm(p);
+  closeModal();
+  showSection('nueva', document.querySelectorAll('.nav-item')[2]);
+}
+
+// ============================================================
+// PATIENT LIST
+// ============================================================
+const avatarColors = ['#c96aaa','#7c6af5','#4fc9a4','#f5a645','#f06060','#5ba8f5','#a3d977'];
+function getAvatarColor(name) {
+  let h = 0; for(let c of name) h = (h * 31 + c.charCodeAt(0)) % avatarColors.length;
+  return avatarColors[h];
+}
+function getInitials(name) {
+  return name.split(/[\s,]+/).filter(Boolean).slice(0,2).map(n=>n[0]).join('').toUpperCase();
+}
+function calcAge(dob) {
+  if (!dob) return '?';
+  const d = new Date(dob); const now = new Date();
+  return Math.floor((now - d) / (365.25 * 24 * 3600 * 1000));
+}
+function getDxTag(dx) {
+  if (dx === 'endometriosis') return '<span class="tag tag-pink">Endometriosis</span>';
+  if (dx === 'miomas') return '<span class="tag tag-orange">Miomas</span>';
+  if (dx === 'ambas') return '<span class="tag tag-purple">Endo + Miomas</span>';
+  if (dx === 'sospecha') return '<span class="tag tag-gray">Sospecha</span>';
+  return '<span class="tag tag-gray">Sin diagnóstico</span>';
+}
+function renderPatientList() {
+  const container = document.getElementById('patientListContainer');
+  const search = document.getElementById('globalSearch').value.toLowerCase();
+  const filterDx = document.getElementById('filterPatologia').value;
+  const filterG = document.getElementById('filterGestacion').value;
+  let filtered = patients.filter(p => {
+    const matchSearch = !search || p.nombre.toLowerCase().includes(search) || (p.nhc||'').toLowerCase().includes(search);
+    const matchDx = !filterDx || p.dx === filterDx;
+    const matchG = !filterG || (filterG === 'si' ? p.deseoGestacion === 'si' || p.deseoGestacion === 'futuro' : p.deseoGestacion === 'no');
+    return matchSearch && matchDx && matchG;
+  });
+  document.getElementById('countPacientes').textContent = filtered.length;
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">👩‍⚕️</div><h3>Sin resultados</h3><div>No hay pacientes que coincidan con los filtros</div><button class="btn btn-primary mt-3" onclick="showSection('nueva',null)">+ Registrar primera paciente</button></div>`;
+    return;
+  }
+  container.innerHTML = filtered.map(p => `
+    <div class="patient-row" onclick="viewPatient('${p.id}')">
+      <div class="patient-avatar" style="background:${getAvatarColor(p.nombre)}20; color:${getAvatarColor(p.nombre)}; border:1px solid ${getAvatarColor(p.nombre)}40">${getInitials(p.nombre)}</div>
+      <div class="patient-info">
+        <div class="patient-name">${p.nombre}</div>
+        <div class="patient-meta">${p.nhc ? 'NHC: ' + p.nhc + ' · ' : ''}${calcAge(p.fechaNac)} años${p.paridad ? ' · ' + p.paridad : ''}</div>
+        <div class="patient-tags">${getDxTag(p.dx)}${p.deseoGestacion === 'si' ? '<span class="tag tag-green">🌱 Gestación</span>' : ''}</div>
+      </div>
+      <div class="patient-actions">
+        <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();generateQuickReport('${p.id}')">📄</button>
+        <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editPatientById('${p.id}')">✏️</button>
+      </div>
+    </div>
+  `).join('');
+}
+function filterPatients(val) { renderPatientList(); }
+function editPatientById(id) {
+  const p = patients.find(pt => pt.id === id);
+  if (!p) return;
+  fillForm(p);
+  showSection('nueva', document.querySelectorAll('.nav-item')[2]);
+}
+
+// ============================================================
+// VIEW PATIENT MODAL
+// ============================================================
+function viewPatient(id) {
+  const p = patients.find(pt => pt.id === id);
+  if (!p) return;
+  currentPatientId = id;
+  document.getElementById('modalPatientName').textContent = p.nombre;
+  document.getElementById('modalPatientBody').innerHTML = buildPatientCard(p);
+  openModal();
+}
+function buildPatientCard(p) {
+  const age = calcAge(p.fechaNac);
+  return `
+    <div style="display:flex; align-items:center; gap:16px; margin-bottom:18px; padding-bottom:16px; border-bottom:1px solid var(--border)">
+      <div class="patient-avatar" style="width:54px; height:54px; font-size:18px; background:${getAvatarColor(p.nombre)}20; color:${getAvatarColor(p.nombre)}; border:2px solid ${getAvatarColor(p.nombre)}40">${getInitials(p.nombre)}</div>
+      <div>
+        <div style="font-family:'DM Serif Display'; font-size:20px">${p.nombre}</div>
+        <div style="font-size:12px; color:var(--text2)">${age} años ${p.fechaNac ? '('+new Date(p.fechaNac).toLocaleDateString('es')+')'  : ''} · ${p.paridad || 'G?'} · ${p.estadoCivil || '—'}</div>
+        <div style="display:flex; gap:4px; margin-top:4px">${getDxTag(p.dx)}${p.deseoGestacion==='si' ? '<span class="tag tag-green">🌱 Gestación inmediata</span>' : p.deseoGestacion==='futuro' ? '<span class="tag tag-green">🌱 Gestación futura</span>' : ''}</div>
+      </div>
+    </div>
+    ${p.sintomas && p.sintomas.length ? `
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px; color:var(--text3); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px">Síntomas</div>
+      <div style="display:flex; flex-wrap:wrap; gap:4px">${p.sintomas.map(s=>`<span class="tag tag-pink">${s}</span>`).join('')}</div>
+      ${p.evaDismenorrea > 0 ? `<div style="font-size:12px; color:var(--text2); margin-top:4px">EVA Dismenorrea: ${p.evaDismenorrea}/10 · EVA Dolor: ${p.evaDolor}/10</div>` : ''}
+    </div>` : ''}
+    ${p.dx === 'endometriosis' || p.dx === 'ambas' ? `
+    <div style="border-left:3px solid var(--accent); padding-left:12px; margin-bottom:14px">
+      <div style="font-size:11px; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px">Endometriosis</div>
+      <div style="font-size:13px">${p.asrm ? 'Estadio ' + p.asrm : ''} ${p.metodoDx ? '· ' + p.metodoDx : ''}</div>
+      ${p.locEndo && p.locEndo.length ? `<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:4px">${p.locEndo.map(l=>`<span class="tag tag-pink">${l}</span>`).join('')}</div>` : ''}
+      ${p.adenomiosis && p.adenomiosis !== 'No' ? `<div style="font-size:12px; color:var(--text2); margin-top:4px">Adenomiosis: ${p.adenomiosis}</div>` : ''}
+    </div>` : ''}
+    ${p.dx === 'miomas' || p.dx === 'ambas' ? `
+    <div style="border-left:3px solid var(--accent4); padding-left:12px; margin-bottom:14px">
+      <div style="font-size:11px; color:var(--accent4); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px">Miomas</div>
+      <div style="font-size:13px">FIGO ${p.figo || '?'} · ${p.numMiomas || '?'} mioma(s) · Mayor: ${p.tamMioma || '?'} mm</div>
+      ${p.hgb ? `<div style="font-size:12px; color:var(--text2); margin-top:4px">Hgb: ${p.hgb} g/dL · AMH: ${p.amh || '?'} ng/mL</div>` : ''}
+    </div>` : ''}
+    ${p.txMedico && p.txMedico.length ? `
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px; color:var(--text3); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px">Tratamiento médico</div>
+      <div style="display:flex; flex-wrap:wrap; gap:4px">${p.txMedico.map(t=>`<span class="tag tag-purple">${t}</span>`).join('')}</div>
+    </div>` : ''}
+    ${p.txQx && p.txQx.length ? `
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px; color:var(--text3); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px">Intervenciones quirúrgicas</div>
+      <div style="display:flex; flex-wrap:wrap; gap:4px">${p.txQx.map(t=>`<span class="tag tag-orange">${t}</span>`).join('')}</div>
+    </div>` : ''}
+    ${(p.deseoGestacion === 'si' || p.deseoGestacion === 'futuro') ? `
+    <div style="border-left:3px solid var(--accent3); padding-left:12px; margin-bottom:14px">
+      <div style="font-size:11px; color:var(--accent3); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px">Fertilidad</div>
+      <div style="font-size:13px">${p.efi ? 'EFI: ' + p.efi + '/10 · ' : ''}${p.factorMasc || ''} ${p.permeabilidad ? '· ' + p.permeabilidad : ''}</div>
+      ${p.tra && p.tra !== 'ninguna' ? `<div style="font-size:12px; color:var(--text2); margin-top:2px">TRA: ${p.tra} ${p.ciclosFIV > 0 ? '('+p.ciclosFIV+' ciclos)' : ''}</div>` : ''}
+    </div>` : ''}
+    ${p.planTx ? `<div class="info-box"><div class="info-title">📋 Plan terapéutico</div><div style="font-size:13px">${p.planTx}</div></div>` : ''}
+    ${p.proxRevision ? `<div style="font-size:12px; color:var(--text2); margin-top:10px">⏰ Próxima revisión: ${new Date(p.proxRevision).toLocaleDateString('es')}</div>` : ''}
+    <div style="font-size:10px; color:var(--text3); margin-top:12px">Registro: ${new Date(p.createdAt).toLocaleDateString('es', {day:'numeric',month:'short',year:'numeric'})} · Actualizado: ${new Date(p.updatedAt).toLocaleDateString('es')}</div>
+  `;
+}
+function openModal() { document.getElementById('patientModal').classList.add('open'); }
+function closeModal() { document.getElementById('patientModal').classList.remove('open'); }
+function deleteCurrentPatient() {
+  if (!confirm('¿Eliminar esta paciente? Esta acción no se puede deshacer.')) return;
+  patients = patients.filter(p => p.id !== currentPatientId);
+  saveData(); closeModal(); renderPatientList(); showToast('Paciente eliminada', 'error');
+}
+
+// ============================================================
+// STATS & BADGES
+// ============================================================
+function updateStats() {
+  const total = patients.length;
+  const endo = patients.filter(p => p.dx === 'endometriosis' || p.dx === 'ambas').length;
+  const mioma = patients.filter(p => p.dx === 'miomas' || p.dx === 'ambas').length;
+  const fert = patients.filter(p => p.deseoGestacion === 'si' || p.deseoGestacion === 'futuro').length;
+  const ambas = patients.filter(p => p.dx === 'ambas').length;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statEndo').textContent = endo;
+  document.getElementById('statMioma').textContent = mioma;
+  document.getElementById('statFert').textContent = fert;
+  const pct = n => total ? Math.round(n/total*100) : 0;
+  document.getElementById('pctEndo').textContent = pct(endo) + '%';
+  document.getElementById('pctMioma').textContent = pct(mioma) + '%';
+  document.getElementById('pctAmbas').textContent = pct(ambas) + '%';
+  document.getElementById('pctFert').textContent = pct(fert) + '%';
+  document.getElementById('barEndo').style.width = pct(endo) + '%';
+  document.getElementById('barMioma').style.width = pct(mioma) + '%';
+  document.getElementById('barAmbas').style.width = pct(ambas) + '%';
+  document.getElementById('barFert').style.width = pct(fert) + '%';
+}
+function updateBadges() {
+  document.getElementById('badgePacientes').textContent = patients.length;
+}
+function renderDashRecent() {
+  const el = document.getElementById('dashRecentList');
+  if (!patients.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">👩‍⚕️</div><div>No hay pacientes aún</div></div>'; return; }
+  el.innerHTML = patients.slice(0,5).map(p => `
+    <div class="patient-row" onclick="viewPatient('${p.id}')">
+      <div class="patient-avatar" style="width:32px; height:32px; font-size:12px; background:${getAvatarColor(p.nombre)}20; color:${getAvatarColor(p.nombre)}">${getInitials(p.nombre)}</div>
+      <div class="patient-info">
+        <div class="patient-name" style="font-size:13px">${p.nombre}</div>
+        <div class="patient-meta">${calcAge(p.fechaNac)} años · ${getDxTag(p.dx)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// EFI CALCULATOR
+// ============================================================
+function calcEFI() {
+  const age = parseInt(document.getElementById('efiAge').value);
+  const dur = parseInt(document.getElementById('efiDuration').value);
+  const preg = parseInt(document.getElementById('efiPregnancy').value);
+  const func = parseInt(document.getElementById('efiFunctionMin').value);
+  const stage = parseInt(document.getElementById('efiStage').value);
+  const total = parseInt(document.getElementById('efiTotal').value);
+  const efi = age + dur + preg + func + stage + total;
+  document.getElementById('efiScore').textContent = efi;
+  const circle = document.getElementById('efiCircle');
+  const rec = document.getElementById('efiRec');
+  rec.style.display = 'block';
+  if (efi >= 7) {
+    circle.style.borderColor = 'var(--accent3)';
+    document.getElementById('efiInterpret').textContent = 'Pronóstico favorable. Intento natural / IUI indicado.';
+    document.getElementById('efiInterpret').style.color = 'var(--accent3)';
+    rec.innerHTML = '<div style="color:var(--accent3)">✅ Recomendación: Intento de concepción natural 6–12 meses o IUI con estimulación ovárica</div>';
+    rec.className = 'success-box mt-3';
+  } else if (efi >= 4) {
+    circle.style.borderColor = 'var(--accent4)';
+    document.getElementById('efiInterpret').textContent = 'Pronóstico intermedio. Considerar TRA.';
+    document.getElementById('efiInterpret').style.color = 'var(--accent4)';
+    rec.innerHTML = '<div style="color:var(--accent4)">⚠️ Recomendación: Discutir FIV/ICSI vs intento natural. Valorar otros factores.</div>';
+    rec.className = 'warn-box mt-3';
+  } else {
+    circle.style.borderColor = 'var(--danger)';
+    document.getElementById('efiInterpret').textContent = 'Pronóstico desfavorable. TRA (FIV) recomendada.';
+    document.getElementById('efiInterpret').style.color = 'var(--danger)';
+    rec.innerHTML = '<div style="color:var(--danger)">🚫 Recomendación: Proceder directamente a FIV/ICSI. Alta probabilidad de no conseguir gestación espontánea.</div>';
+    rec.className = 'warn-box mt-3';
+  }
+}
+
+// ============================================================
+// BB SCORE
+// ============================================================
+function calcBB() {
+  const total = ['bb1','bb2','bb3','bb4'].reduce((s,id) => s + parseInt(document.getElementById(id).value), 0);
+  document.getElementById('bbScore').textContent = total;
+  const circle = document.getElementById('bbCircle');
+  const interp = document.getElementById('bbInterpret');
+  if (total <= 3) { circle.style.borderColor='var(--accent3)'; interp.textContent='Sintomatología leve/ausente'; interp.style.color='var(--accent3)'; }
+  else if (total <= 7) { circle.style.borderColor='var(--accent4)'; interp.textContent='Sintomatología moderada · Reevaluar tratamiento'; interp.style.color='var(--accent4)'; }
+  else { circle.style.borderColor='var(--danger)'; interp.textContent='Sintomatología severa · Intervención activa necesaria'; interp.style.color='var(--danger)'; }
+}
+
+// ============================================================
+// EVA
+// ============================================================
+function updateEVA() {
+  const v = parseInt(document.getElementById('evaSlider').value);
+  document.getElementById('evaNum').textContent = v;
+  const labels = ['Sin dolor','Mínimo','Muy leve','Leve','Moderado-leve','Moderado','Moderado-intenso','Intenso','Muy intenso','Severo','Insoportable'];
+  document.getElementById('evaLabel').textContent = labels[v];
+  const colors = ['var(--accent3)','var(--accent3)','var(--accent3)','var(--accent3)','var(--accent4)','var(--accent4)','var(--accent4)','var(--danger)','var(--danger)','var(--danger)','var(--danger)'];
+  document.getElementById('evaBar').style.width = (v * 10) + '%';
+  document.getElementById('evaBar').style.background = colors[v];
+  document.getElementById('evaNum').style.color = colors[v];
+  document.getElementById('evaResult').style.borderColor = colors[v];
+}
+
+// ============================================================
+// REPORT
+// ============================================================
+function populateReportSelect() {
+  const sel = document.getElementById('reportPatientSelect');
+  sel.innerHTML = '<option value="">— Seleccionar paciente —</option>' +
+    patients.map(p => `<option value="${p.id}">${p.nombre} (${calcAge(p.fechaNac)} años)</option>`).join('');
+}
+function generateReport() {
+  const id = document.getElementById('reportPatientSelect').value;
+  const type = document.getElementById('reportType').value;
+  if (!id) { showToast('Selecciona una paciente', 'error'); return; }
+  const p = patients.find(pt => pt.id === id);
+  if (!p) return;
+  const out = document.getElementById('reportOutput');
+  const content = document.getElementById('reportContent');
+  content.innerHTML = buildReport(p, type);
+  out.style.display = 'block';
+  out.scrollIntoView({ behavior: 'smooth' });
+  showToast('Informe generado correctamente ✓', 'success');
+}
+function generateReportFromModal() {
+  const p = patients.find(pt => pt.id === currentPatientId);
+  if (!p) return;
+  closeModal();
+  showSection('informes', null);
+  setTimeout(() => {
+    populateReportSelect();
+    document.getElementById('reportPatientSelect').value = p.id;
+    generateReport();
+  }, 200);
+}
+function generateQuickReport(id) {
+  const p = patients.find(pt => pt.id === id);
+  if (!p) return;
+  currentPatientId = id;
+  showSection('informes', null);
+  setTimeout(() => {
+    populateReportSelect();
+    document.getElementById('reportPatientSelect').value = id;
+    generateReport();
+  }, 200);
+}
+function buildReport(p, type) {
+  const fecha = new Date().toLocaleDateString('es', {day:'numeric', month:'long', year:'numeric'});
+  const edad = calcAge(p.fechaNac);
+  const header = `
+    <div style="text-align:center; padding-bottom:18px; border-bottom:2px solid var(--accent); margin-bottom:20px">
+      <div style="font-family:'DM Serif Display'; font-size:22px; color:var(--accent)">GinecoApp Pro — Informe Clínico</div>
+      <div style="font-size:12px; color:var(--text2)">ESHRE 2022 · SEGO 2025 · Generado: ${fecha}</div>
+    </div>
+  `;
+  const dxLabels = { endometriosis:'Endometriosis', miomas:'Miomas Uterinos', ambas:'Endometriosis + Miomas', sospecha:'Sospecha pendiente estudio' };
+  const rows = (items) => items.map(([k,v]) => v ? `<div class="report-row"><span class="report-row-key">${k}</span><span class="report-row-val">${v}</span></div>` : '').join('');
+
+  let body = '';
+  if (type === 'clinico' || type === 'dx') {
+    body += `
+      <div class="report-section">
+        <h3>1. Datos de la Paciente</h3>
+        ${rows([['Nombre completo', p.nombre], ['NHC', p.nhc], ['Fecha de nacimiento', p.fechaNac ? new Date(p.fechaNac).toLocaleDateString('es') : '—'], ['Edad', edad + ' años'], ['Estado civil', p.estadoCivil], ['Paridad', p.paridad], ['IMC', p.imc ? p.imc + ' kg/m²' : '—'], ['Menarquia', p.menarquia ? p.menarquia + ' años' : '—']])}
+      </div>
+      <div class="report-section">
+        <h3>2. Síntomas y Clínica</h3>
+        ${rows([['Síntomas principales', (p.sintomas||[]).join(', ')], ['EVA Dismenorrea', p.evaDismenorrea + '/10'], ['EVA Dolor pélvico', p.evaDolor + '/10'], ['Duración síntomas', p.duracion], ['Demora diagnóstica', p.demora], ['Observaciones', p.obsSint]])}
+      </div>
+      <div class="report-section">
+        <h3>3. Diagnóstico</h3>
+        ${rows([['Patología principal', dxLabels[p.dx] || '—'], ['Fecha diagnóstico', p.fechaDx ? new Date(p.fechaDx).toLocaleDateString('es') : '—'], ['Método diagnóstico', p.metodoDx],
+          ...(p.dx === 'endometriosis' || p.dx === 'ambas' ? [['Estadio rASRM', p.asrm ? 'Estadio ' + p.asrm : '—'], ['Localización lesiones', (p.locEndo||[]).join(', ')], ['Endometrioma tamaño', p.tamEndometrioma ? p.tamEndometrioma + ' mm' : '—'], ['Adenomiosis', p.adenomiosis]] : []),
+          ...(p.dx === 'miomas' || p.dx === 'ambas' ? [['Tipo FIGO principal', 'Tipo ' + (p.figo || '?')], ['Número miomas', p.numMiomas], ['Tamaño mayor', p.tamMioma ? p.tamMioma + ' mm' : '—'], ['Distorsión cavidad', p.distorsion], ['Hemoglobina', p.hgb ? p.hgb + ' g/dL' : '—'], ['AMH', p.amh ? p.amh + ' ng/mL' : '—']] : []),
+          ['Notas diagnósticas', p.notesDx]])}
+      </div>
+    `;
+  }
+  if (type === 'clinico' || type === 'tx') {
+    body += `
+      <div class="report-section">
+        <h3>${type === 'tx' ? '1' : '4'}. Tratamiento</h3>
+        ${rows([['Estado tratamiento', p.estadoTx], ['Tratamiento médico', (p.txMedico||[]).join(', ')], ['Intervenciones quirúrgicas', (p.txQx||[]).join(', ')], ['Respuesta al tratamiento', p.respTx], ['Anticoncepción actual', p.anticoncepcion], ['Próxima revisión', p.proxRevision ? new Date(p.proxRevision).toLocaleDateString('es') : '—']])}
+        ${p.planTx ? `<div style="margin-top:10px; padding:12px; background:var(--bg3); border-radius:6px; font-size:13px"><strong>Plan terapéutico:</strong><br>${p.planTx}</div>` : ''}
+      </div>
+    `;
+  }
+  if (type === 'clinico' || type === 'fert') {
+    if (p.deseoGestacion !== 'no') {
+      body += `
+        <div class="report-section">
+          <h3>${type === 'fert' ? '1' : '5'}. Evaluación de Fertilidad</h3>
+          ${rows([['Deseo gestacional', p.deseoGestacion === 'si' ? 'Inmediato' : 'Futuro'], ['Tiempo infertilidad', p.tiempoInfert ? p.tiempoInfert + ' meses' : '—'], ['Factor masculino', p.factorMasc], ['Permeabilidad tubárica', p.permeabilidad], ['EFI estimado', p.efi ? p.efi + '/10' : '—'], ['TRA realizadas', p.tra], ['Ciclos FIV previos', p.ciclosFIV || '0'], ['AMH', p.amh ? p.amh + ' ng/mL' : '—'], ['Notas', p.notesFert]])}
+        </div>
+      `;
+    }
+  }
+  if (type === 'derivacion') {
+    body = `
+      <div class="report-section">
+        <h3>INFORME DE DERIVACIÓN</h3>
+        <div style="padding:14px; background:var(--bg3); border-radius:8px; font-size:13.5px; line-height:1.8">
+          <p>Se remite a <strong>${p.nombre}</strong>, de <strong>${edad} años</strong>${p.paridad ? ', ' + p.paridad : ''}, para valoración especializada por el Servicio de Ginecología.</p>
+          <br><p><strong>Motivo de derivación:</strong> ${dxLabels[p.dx] || 'Patología ginecológica'} ${p.asrm ? '(Estadio ' + p.asrm + ')' : ''}</p>
+          ${p.sintomas && p.sintomas.length ? `<br><p><strong>Síntomas principales:</strong> ${p.sintomas.join(', ')}. EVA dismenorrea ${p.evaDismenorrea}/10.</p>` : ''}
+          ${p.txMedico && p.txMedico.length ? `<br><p><strong>Tratamientos previos:</strong> ${p.txMedico.join(', ')}. Respuesta: ${p.respTx || 'no especificada'}.</p>` : ''}
+          ${p.deseoGestacion !== 'no' ? `<br><p><strong>Deseo gestacional:</strong> Sí. EFI estimado: ${p.efi || 'pendiente'}.</p>` : ''}
+          <br><p>Se solicita valoración para optimización diagnóstica y terapéutica según guías ESHRE 2022 / SEGO 2025.</p>
+        </div>
+      </div>
+    `;
+  }
+  return header + body + `<div style="font-size:10px; color:var(--text3); margin-top:24px; border-top:1px solid var(--border); padding-top:10px">Informe generado por GinecoApp Pro v2.0 · Basado en ESHRE Guideline Endometriosis 2022 y Guía SEGO Miomas 2025. Documento no tiene valor sin la firma del médico responsable.</div>`;
+}
+function printReport() {
+  const id = document.getElementById('reportPatientSelect').value;
+  if (!id) { showToast('Genera el informe primero', 'error'); return; }
+  window.print();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  t.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  t.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+updateStats(); updateBadges();
+</script>
+</body>
+</html>
