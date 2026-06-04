@@ -235,7 +235,14 @@ button,a{touch-action:manipulation}
   .card{padding:12px}
   .tab{padding:8px 10px;font-size:12px}
 }
-@media print{.sidebar,.topbar,.bnav,.mov,.no-print{display:none!important}.main{margin-left:0!important}body{background:#fff!important;color:#000!important}.card{border:1px solid #ccc!important;background:#fff!important}.toast{display:none!important}}
+@media print{.sidebar,.topbar,.bnav,.mov,.no-print{display:none!important}.main{margin-left:0!important}body{background:#fff!important;color:#000!important}.card{border:1px solid #ccc!important;background:#fff!important}.toast{display:none!important}
+  /* Report-specific print styles */
+  #rOut{border:none!important;padding:0!important}
+  .rs h3{color:#c462a4!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rr{border-bottom:1px solid #ddd!important}
+  .rk{color:#666!important}.rv{font-weight:600}
+  @page{margin:20mm;size:A4}
+}
 </style>
 </head>
 <body>
@@ -924,7 +931,7 @@ button,a{touch-action:manipulation}
 // ═══════════════════════════════════════════════
 let DB=JSON.parse(localStorage.getItem('gapp2_pts')||'[]');
 let cId=null,eId=null;
-const sv=()=>{localStorage.setItem('gapp2_pts',JSON.stringify(DB));uSt();uBdg();};
+const sv=()=>{localStorage.setItem('gapp2_pts',JSON.stringify(DB));uSt();uBdg();updExpCount&&updExpCount();};
 const gid=()=>'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
 
 // ═══════════════════════════════════════════════
@@ -956,7 +963,7 @@ function go(id,btn){
   cls();
   if(id==='pacientes')rPL();
   if(id==='dashboard'){uSt();dRec();}
-  if(id==='informes')fRS();
+  if(id==='informes'){fRS();setTimeout(initInfTab,50);}
   if(id==='nueva'&&!eId)clr();
   window.scrollTo(0,0);
 }
@@ -981,6 +988,8 @@ function sw(pfx,n,btn){
     if(el.id&&el.id.startsWith(pfx+'T')){el.style.display=i===n?'block':'none';i++;}
     el=el.nextElementSibling;
   }
+  // refresh stats when switching to export tab
+  if(pfx==='inf'&&n===1){updExpCount();document.getElementById('statsTable').innerHTML=buildStats();}
 }
 
 // ═══════════════════════════════════════════════
@@ -1467,7 +1476,7 @@ function expXLSX(){
   if(!cols.length){tst('Selecciona al menos una columna','er');return;}
   const sep=';';
   const header=buildCSVHeader(sep,cols).split(sep);
-  const rows=pts.map(p=>buildCSVRow(sep,cols,p)||buildCSVRow(p,sep,cols));
+  const rows=pts.map(p=>buildCSVRow(p,'\t',cols));
 
   // Build HTML table that Excel can open natively
   let tbl='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">';
@@ -1476,7 +1485,8 @@ function expXLSX(){
   header.forEach(h=>{ tbl+=`<th>${h}</th>`; });
   tbl+='</tr></thead><tbody>';
   pts.forEach((p,i)=>{
-    const r=buildCSVRow(p,'\t',cols).split('\t');
+    const rawRow=buildCSVRow(p,'\t',cols);
+    const r=rawRow.split('\t');
     tbl+=`<tr style="background:${i%2===0?'#ffffff':'#f8f0f6'}">`;
     r.forEach(cell=>{ tbl+=`<td>${cell.replace(/^"|"$/g,'').replace(/""/g,'"')}</td>`; });
     tbl+='</tr>';
@@ -1640,16 +1650,6 @@ function initInfTab(){
   updExpCount();
   document.getElementById('statsTable').innerHTML=buildStats();
 }
-// override go to init stats when visiting informes
-function goWrapper(id, btn){
-  _origGo(id, btn);
-  if(id === 'informes'){ fRS(); initInfTab(); }
-}
-
-const _origGo = go;
-go = goWrapper;
-
-
 // ── REPORT COPY / DL (already bound above) ──
 
 // ═══════════════════════════════════════════════
