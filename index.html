@@ -938,6 +938,7 @@ button,a{touch-action:manipulation}
     <div class="mbdy" id="mPB"></div>
     <div class="mft">
       <button class="btn bg bsm" onclick="qR()">📄 Informe</button>
+      <button class="btn bs bsm" onclick="openCtx()">🧭 Guía clínica</button>
       <button class="btn bd bsm" onclick="dPt()">🗑 Eliminar</button>
       <button class="btn bp bsm" onclick="cM()">Cerrar</button>
     </div>
@@ -1224,6 +1225,7 @@ function vPt(id){
   document.getElementById('mPN').textContent=p.nombre;
   document.getElementById('mPB').innerHTML=bCard(p);
   oM();
+  setTimeout(()=>buildCtxPanel(p),0);
 }
 function bCard(p){
   // Check upcoming review
@@ -1289,8 +1291,207 @@ function bCard(p){
     </div>`:''}
   ${p.planTx?`<div class="box bi2 mb3"><div class="bt">📋 Plan terapéutico</div><div class="sm">${p.planTx}</div></div>`:''}
   ${revAlert}
+  <div id="ctxPanel" style="margin-top:14px"></div>
   <div class="xs c3" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border)">📅 Registrado: ${created}${updated}</div>`;
 }
+// ═══════════════════════════════════════════════
+// DECISOR CLÍNICO CONTEXTUAL
+// ═══════════════════════════════════════════════
+function buildCtxPanel(p){
+  const el=document.getElementById('ctxPanel');
+  if(!el)return;
+  const recs=getCtxRecs(p);
+  if(!recs.length){el.innerHTML='';return;}
+  el.innerHTML=`
+    <div style="border:1px solid var(--border2);border-radius:var(--r2);overflow:hidden;margin-top:4px">
+      <div style="background:rgba(112,96,240,.1);padding:8px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:11.5px;font-weight:700;color:var(--pu);letter-spacing:.3px">🧭 GUÍA CLÍNICA CONTEXTUAL</div>
+        <div class="xs c3">basada en los datos de esta paciente</div>
+      </div>
+      <div style="padding:10px 12px;display:flex;flex-direction:column;gap:7px">
+        ${recs.map(r=>`
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 10px;background:var(--bg3);border-radius:var(--r2);border-left:3px solid ${r.color}">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:12px;font-weight:700;color:${r.color};margin-bottom:2px">${r.titulo}</div>
+              <div class="xs c2" style="line-height:1.5">${r.texto}</div>
+            </div>
+            <button class="btn bsm" style="flex-shrink:0;font-size:11px;padding:4px 9px;background:${r.color}20;border:1px solid ${r.color}40;color:${r.color};border-radius:6px;cursor:pointer;white-space:nowrap" onclick="navCtx('${r.seccion}',${r.tab})">Ver guía →</button>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function getCtxRecs(p){
+  const recs=[];
+  const dx=p.dx||'';
+  const endo=dx==='endometriosis'||dx==='ambas';
+  const mioma=dx==='miomas'||dx==='ambas';
+  const gesta=p.deseoGestacion==='si'||p.deseoGestacion==='futuro';
+  const hgb=parseFloat(p.hgb);
+  const efi=parseInt(p.efi);
+  const figo=parseInt(p.figo);
+  const respRef=p.respTx&&(p.respTx.includes('Escasa')||p.respTx.includes('Refractaria'));
+  const sinTx=!p.estadoTx||p.estadoTx==='ninguno'||p.estadoTx==='seguimiento';
+  const postQx=p.estadoTx==='quirurgico'||p.estadoTx==='mixto';
+  const txQxLen=(p.txQx||[]).length>0;
+
+  // ── ENDOMETRIOSIS ──
+  if(endo){
+    // Sin diagnóstico confirmado / empírico
+    if(p.metodoDx==='Diagnóstico empírico'||dx==='sospecha'){
+      recs.push({color:'var(--pu)',titulo:'Diagnóstico pendiente de confirmar',
+        texto:'Imagen negativa con tratamiento empírico. Revisar criterios ESHRE 2022 para indicación de laparoscopía diagnóstica.',
+        seccion:'algoritmos',tab:0});
+    }
+    // Estadio III-IV o ED profunda
+    const profunda=(p.locEndo||[]).some(l=>['Tabique rectovaginal','Intestinal','Vesical','Ureteral','Diafragmática'].includes(l));
+    if(p.asrm==='III'||p.asrm==='IV'||profunda){
+      recs.push({color:'var(--rd)',titulo:'Endometriosis profunda / Estadio '+(p.asrm||'avanzado'),
+        texto:'Criterios para derivación a centro de excelencia (Rec.30 ESHRE). Valorar cirugía multidisciplinar.',
+        seccion:'tratamiento',tab:0});
+    }
+    // Tratamiento refractario
+    if(respRef){
+      recs.push({color:'var(--rd)',titulo:'Respuesta insuficiente al tratamiento',
+        texto:'Explorar 2ª línea: antagonistas GnRH (relugolix, linzagolix) o inhibidores aromatasa si falló todo lo previo (Rec.23).',
+        seccion:'tratamiento',tab:0});
+    }
+    // Sin tratamiento activo y con síntomas
+    if(sinTx&&(p.sintomas||[]).length>0){
+      recs.push({color:'var(--gr)',titulo:'Sin tratamiento activo con síntomas registrados',
+        texto:'Iniciar 1ª línea: ACO combinados o progestágenos (dienogest, DIU-LNG). No esperar confirmación quirúrgica (Rec.6).',
+        seccion:'algoritmos',tab:2});
+    }
+    // Postquirúrgica sin anticoncepción hormonal
+    if(postQx&&!gesta){
+      const tieneHormonal=(p.txMed||[]).some(t=>['ACO combinados','Progestágenos (oral)','DIU-LNG','Implante etonogestrel','Dienogest'].includes(t));
+      if(!tieneHormonal){
+        recs.push({color:'var(--or)',titulo:'Post-cirugía sin supresión hormonal',
+          texto:'Recomendado DIU-LNG o ACO ≥18–24 meses para prevenir recurrencia (Rec.65 ESHRE ⊕⊕ Fuerte).',
+          seccion:'tratamiento',tab:0});
+      }
+    }
+    // Adenomiosis
+    if(p.adenomiosis&&p.adenomiosis!=='No'&&p.adenomiosis!==''){
+      recs.push({color:'var(--pk)',titulo:'Adenomiosis '+p.adenomiosis.toLowerCase()+' asociada',
+        texto:'DIU-LNG primera opción. GnRH antagonistas si fallo. Valorar RM para extensión antes de cirugía.',
+        seccion:'tratamiento',tab:0});
+    }
+  }
+
+  // ── MIOMAS ──
+  if(mioma){
+    // Anemia (Hgb < 12 con miomas)
+    if(!isNaN(hgb)&&hgb<12){
+      const severidad=hgb<10?'severa':'moderada';
+      recs.push({color:'var(--rd)',titulo:`Anemia ${severidad} (Hgb ${p.hgb} g/dL)`,
+        texto:`Optimizar a Hgb >12 g/dL antes de cirugía. Antagonistas GnRH (Relugolix/Linzagolix) recuperan Hgb y reducen volumen miomático.`,
+        seccion:'tratamiento',tab:1});
+    }
+    // Mioma submucoso (FIGO 0-2) sin histeroscopia
+    if(!isNaN(figo)&&figo<=2){
+      const tieneHisto=(p.txQx||[]).includes('Miomectomía histeroscópica');
+      if(!tieneHisto){
+        recs.push({color:'var(--rd)',titulo:`Mioma submucoso FIGO ${p.figo} — acción prioritaria`,
+          texto:'Miomectomía histeroscópica indicada'+(gesta?' ANTES de concepción o TRA (SEGO 2025)':'. Evaluar con escala STEPW previa.')+' ',
+          seccion:'tratamiento',tab:2});
+      }
+    }
+    // Mioma intramural >4cm con deseo gestacional
+    if(!isNaN(figo)&&figo>=3&&figo<=4&&parseFloat(p.tamMioma)>=40&&gesta){
+      recs.push({color:'var(--or)',titulo:'Intramural >4cm con deseo gestacional',
+        texto:'Considerar antagonistas GnRH 3 meses preconcepcional para optimizar entorno uterino antes de búsqueda o TRA (SEGO 2025).',
+        seccion:'fertilidad',tab:-1});
+    }
+    // SUA sin tratamiento
+    if((p.sintMioma||[]).includes('SUA (sangrado abundante)')&&sinTx){
+      recs.push({color:'var(--or)',titulo:'SUA no tratado',
+        texto:'1ª línea: DIU-LNG si cavidad no distorsionada, o ACO. Antagonistas GnRH para control rápido y reducción de volumen.',
+        seccion:'tratamiento',tab:1});
+    }
+    // Distorsión cavidad sin cirugía
+    if(p.distorsion==='Sí'&&!txQxLen&&gesta){
+      recs.push({color:'var(--pk)',titulo:'Cavidad distorsionada con deseo gestacional',
+        texto:'Resolución quirúrgica necesaria antes de TRA. Valorar tipo FIGO y escala STEPW para elección de técnica.',
+        seccion:'tratamiento',tab:2});
+    }
+  }
+
+  // ── FERTILIDAD ──
+  if(gesta){
+    // EFI calculado
+    if(!isNaN(efi)){
+      if(efi>=7){
+        recs.push({color:'var(--gr)',titulo:'EFI '+efi+'/10 — Pronóstico favorable',
+          texto:'Intento natural o IUI con estimulación ovárica hasta 6 meses. No iniciar FIV sin fracaso previo (Rec.47 ESHRE).',
+          seccion:'fertilidad',tab:-1});
+      } else if(efi>=4){
+        recs.push({color:'var(--or)',titulo:'EFI '+efi+'/10 — Pronóstico intermedio',
+          texto:'Discutir FIV/ICSI vs intento natural. Valorar factor masculino y permeabilidad tubárica (Rec.49 ESHRE ⊕⊕).',
+          seccion:'fertilidad',tab:-1});
+      } else {
+        recs.push({color:'var(--rd)',titulo:'EFI '+efi+'/10 — Pronóstico desfavorable',
+          texto:'Proceder directamente a FIV/ICSI. No retrasar con intentos naturales (Rec.49 ESHRE).',
+          seccion:'fertilidad',tab:-1});
+      }
+    } else if(endo||mioma){
+      // Deseo gestacional sin EFI calculado
+      recs.push({color:'var(--pu)',titulo:'EFI pendiente de calcular',
+        texto:'Calcular EFI post-cirugía para orientar la vía reproductiva (natural/IUI vs FIV).',
+        seccion:'fertilidad',tab:-1});
+    }
+    // AMH baja con deseo gestacional
+    const amh=parseFloat(p.amh);
+    if(!isNaN(amh)&&amh<1.0){
+      recs.push({color:'var(--rd)',titulo:'Reserva ovárica comprometida (AMH '+p.amh+' ng/mL)',
+        texto:'Urgencia reproductiva. Valorar preservación fertilidad antes de nueva cirugía ovárica (Rec.59 ESHRE).',
+        seccion:'fertilidad',tab:-1});
+    }
+  }
+
+  // ── SIN DIAGNÓSTICO / SOSPECHA ──
+  if(dx===''||dx==='sospecha'){
+    recs.push({color:'var(--pu)',titulo:'Diagnóstico sin confirmar',
+      texto:'Iniciar protocolo diagnóstico ESHRE 2022: imagen (eco TV / RM) + tratamiento empírico como primer paso.',
+      seccion:'algoritmos',tab:0});
+  }
+
+  return recs;
+}
+
+// Navegar a sección+tab cerrando el modal
+function navCtx(seccion,tab){
+  cM();
+  setTimeout(()=>{
+    go(seccion,null);
+    if(tab>=0){
+      // Activar el tab correcto programáticamente
+      const pfx=seccion==='algoritmos'?'al':'tx';
+      const tabsEl=document.getElementById(pfx+'Tabs');
+      if(tabsEl){
+        const tabBtns=tabsEl.querySelectorAll('.tab');
+        if(tabBtns[tab]){
+          // Desactivar todos, activar el correcto
+          tabBtns.forEach((t,i)=>t.classList.toggle('on',i===tab));
+          // Mostrar el panel correcto
+          let el=tabsEl.nextElementSibling,i=0;
+          while(el){
+            if(el.id&&el.id.startsWith(pfx+'T')){el.style.display=i===tab?'block':'none';i++;}
+            el=el.nextElementSibling;
+          }
+        }
+      }
+    }
+  },260);
+}
+
+function openCtx(){
+  const p=DB.find(x=>x.id===cId);
+  if(!p)return;
+  const el=document.getElementById('ctxPanel');
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 function oM(){document.getElementById('ptM').classList.add('open');document.body.style.overflow='hidden';}
 function cM(){document.getElementById('ptM').classList.remove('open');document.body.style.overflow='';}
 
