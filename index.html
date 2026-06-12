@@ -950,7 +950,7 @@ button,a{touch-action:manipulation}
 // ═══════════════════════════════════════════════
 let DB=JSON.parse(localStorage.getItem('gapp2_pts')||'[]');
 let cId=null,eId=null;
-const sv=()=>{localStorage.setItem('gapp2_pts',JSON.stringify(DB));uSt();uBdg();updExpCount&&updExpCount();};
+const sv=()=>{localStorage.setItem('gapp2_pts',JSON.stringify(DB));uSt();buildReviewAlerts&&buildReviewAlerts();uBdg();updExpCount&&updExpCount();};
 const gid=()=>'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
 
 // ═══════════════════════════════════════════════
@@ -1279,7 +1279,7 @@ function bCard(p){
       <div class="xs c3 f6 mb2" style="text-transform:uppercase;letter-spacing:.8px">Intervenciones quirúrgicas</div>
       <div style="display:flex;flex-wrap:wrap;gap:3px">${p.txQx.map(t=>`<span class="tag to">${t}</span>`).join('')}</div>
     </div>`:''}
-  ${(p.deseoGestacion==='si'||p.deseoGestacion==='futuro')&&(p.efi||p.factorMasc||p.tra)?`
+  ${(p.deseoGestacion==='si'||p.deseoGestacion==='futuro')?`
     <div style="border-left:3px solid var(--gr);padding-left:10px;margin-bottom:12px">
       <div class="xs f6 cg mb1" style="text-transform:uppercase;letter-spacing:.8px">Fertilidad</div>
       ${p.efi?`<div class="sm">EFI: <strong>${p.efi}/10</strong> — ${+p.efi>=7?'✅ Intento natural/IUI':+p.efi>=4?'⚠️ Intermedio':'🚫 FIV recomendada'}</div>`:''}
@@ -1679,6 +1679,7 @@ function expXLSX(){
   tbl+='<table border="1"><thead><tr style="background:#c462a4;color:white;font-weight:bold">';
   header.forEach(h=>{ tbl+=`<th>${h}</th>`; });
   tbl+='</tr></thead><tbody>';
+  const xe=v=>(v==null?'':Array.isArray(v)?v.join(' | '):String(v)).replace(/</g,'&lt;').replace(/>/g,'&gt;');
   pts.forEach((p,i)=>{
     tbl+=`<tr style="background:${i%2===0?'#ffffff':'#f8f0f6'}">`;
     // Build each cell individually to avoid split bugs
@@ -1689,7 +1690,6 @@ function expXLSX(){
     const d=cols.includes('Tratamiento');
     const e2=cols.includes('Fertilidad');
     const f=cols.includes('Laboratorio');
-    const xe=v=>(v==null?'':Array.isArray(v)?v.join(' | '):String(v)).replace(/</g,'&lt;').replace(/>/g,'&gt;');
     if(a)cells.push(xe(p.nombre),xe(p.nhc),xe(p.fechaNac),xe(p.fechaNac?Math.floor((new Date()-new Date(p.fechaNac))/(365.25*24*3600*1e3)):''),xe(p.estadoCivil),xe(p.paridad),xe(p.imc),xe(p.menarquia),xe(p.anticoncepcion),xe(p.deseoGestacion));
     if(b)cells.push(xe(p.sintomas),xe(p.evaD||0),xe(p.evaP||0),xe(p.duracion),xe(p.demora));
     if(c)cells.push(xe(p.dx),xe(p.fechaDx),xe(p.asrm),xe(p.metodoDx),xe(p.locEndo),xe(p.tamEndo),xe(p.adenomiosis),xe(p.figo),xe(p.numMiomas),xe(p.tamMioma),xe(p.distorsion));
