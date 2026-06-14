@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayuda — GinecoApp Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ── */
+:root{
+  --pk:#c462a4;--pu:#7060f0;--gr:#3dba94;--or:#e89830;--rd:#e85555;
+  --r:12px;--r2:8px;
+}
+[data-theme="light"]{
+  --bg:#f4f5f9;--bg2:#ffffff;--bg3:#f0f1f7;--bg4:#e8eaf2;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#1a1c2e;--text2:#5c5f7a;--text3:#9093b0;
+  --card:#ffffff;--shadow:0 4px 24px rgba(0,0,0,.1);
+}
+[data-theme="dark"]{
+  --bg:#0d0e14;--bg2:#12131a;--bg3:#191a24;--bg4:#1e1f2c;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#e6e7f0;--text2:#8a8ca6;--text3:#53556e;
+  --card:#14151e;--shadow:0 8px 40px rgba(0,0,0,.55);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:14px;line-height:1.6;
+  background:var(--bg);color:var(--text);
+  transition:background .25s,color .25s;
+}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px}
+
+/* ── Layout ── */
+.shell{display:flex;min-height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{
+  width:260px;flex-shrink:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  position:fixed;inset:0 auto 0 0;
+  display:flex;flex-direction:column;z-index:100;
+  overflow-y:auto;transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+.slogo{
+  padding:16px 14px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.lico{
+  width:34px;height:34px;border-radius:9px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--pk),var(--pu));
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+}
+.ltxt strong{display:block;font-size:14px;font-weight:700;letter-spacing:-.3px}
+.ltxt span{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase}
+
+.snav{flex:1;padding:10px 8px;overflow-y:auto}
+.snlbl{
+  font-size:10px;font-weight:600;color:var(--text3);
+  letter-spacing:1.3px;text-transform:uppercase;
+  padding:10px 10px 4px;
+}
+.sna{
+  display:flex;align-items:center;gap:8px;width:100%;
+  padding:8px 10px;border-radius:var(--r2);
+  background:none;border:none;cursor:pointer;
+  color:var(--text2);font-size:13px;font-weight:500;
+  transition:all .15s;text-align:left;font-family:inherit;
+  text-decoration:none;
+}
+.sna:hover{background:var(--bg3);color:var(--text)}
+.sna.on{background:rgba(196,98,164,.14);color:var(--pk)}
+.sna .ico{width:18px;text-align:center;font-size:13px;flex-shrink:0}
+
+.sfoot{padding:11px 13px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+.sfoot a{color:var(--pk);text-decoration:none}
+.sfoot a:hover{text-decoration:underline}
+
+/* ── Topbar ── */
+.topbar{
+  height:52px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;padding:0 18px;
+  position:sticky;top:0;z-index:50;
+}
+.hmenu{display:none;background:none;border:none;cursor:pointer;font-size:18px;color:var(--text2);padding:4px}
+.topbar-title{font-size:14px;font-weight:600;flex:1}
+.tbtn{
+  width:34px;height:34px;border-radius:var(--r2);
+  background:var(--bg3);border:1px solid var(--border2);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:15px;transition:all .15s;text-decoration:none;color:var(--text2);
+}
+.tbtn:hover{background:var(--bg4)}
+
+/* ── Main ── */
+.main{flex:1;margin-left:260px;display:flex;flex-direction:column;min-height:100vh}
+.content{flex:1;padding:28px 32px 60px;max-width:860px}
+
+/* ── Secciones ── */
+.section{display:none;animation:fu .22s ease forwards}
+.section.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Tipografía ── */
+.page-title{
+  font-size:24px;font-weight:700;letter-spacing:-.5px;
+  margin-bottom:6px;
+}
+.page-sub{font-size:14px;color:var(--text2);margin-bottom:28px;line-height:1.5}
+h2{font-size:16px;font-weight:700;margin:28px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+h2:first-of-type{margin-top:0}
+h3{font-size:13.5px;font-weight:600;margin:18px 0 7px;color:var(--pk)}
+p{font-size:13.5px;color:var(--text2);margin-bottom:10px;line-height:1.65}
+p strong{color:var(--text);font-weight:600}
+ul,ol{padding-left:18px;margin-bottom:12px}
+li{font-size:13.5px;color:var(--text2);margin-bottom:5px;line-height:1.55}
+li strong{color:var(--text)}
+code{
+  font-family:'SF Mono','Fira Code',monospace;font-size:11.5px;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:4px;padding:1px 5px;color:var(--pk);
+}
+
+/* ── Cards ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:12px}
+.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+
+/* ── Callouts ── */
+.box{border-radius:var(--r2);padding:11px 14px;margin-bottom:12px;font-size:12.5px}
+.box .bt{font-size:11.5px;font-weight:700;margin-bottom:4px}
+.bi{background:rgba(112,96,240,.1);border:1px solid rgba(112,96,240,.25)}.bi .bt{color:var(--pu)}
+.bw{background:rgba(232,152,48,.1);border:1px solid rgba(232,152,48,.25)}.bw .bt{color:var(--or)}
+.bo{background:rgba(61,186,148,.1);border:1px solid rgba(61,186,148,.25)}.bo .bt{color:var(--gr)}
+.br{background:rgba(232,85,85,.1);border:1px solid rgba(232,85,85,.25)}.br .bt{color:var(--rd)}
+
+/* ── Tags ── */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;margin:2px 2px 2px 0}
+.tp{background:rgba(196,98,164,.15);color:var(--pk);border:1px solid rgba(196,98,164,.25)}
+.tpu{background:rgba(112,96,240,.15);color:var(--pu);border:1px solid rgba(112,96,240,.25)}
+.tg{background:rgba(61,186,148,.15);color:var(--gr);border:1px solid rgba(61,186,148,.25)}
+.to{background:rgba(232,152,48,.15);color:var(--or);border:1px solid rgba(232,152,48,.25)}
+.tgr{background:var(--bg3);color:var(--text2);border:1px solid var(--border2)}
+
+/* ── Tabla ── */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:14px}
+.tbl th{padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;background:var(--bg3)}
+.tbl td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.tbl td:first-child{font-weight:600;color:var(--text);white-space:nowrap}
+.tbl tr:last-child td{border-bottom:none}
+
+/* ── Atajo teclado ── */
+kbd{
+  display:inline-flex;align-items:center;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:4px;padding:1px 6px;font-size:11px;
+  font-family:'SF Mono','Fira Code',monospace;color:var(--text);
+  box-shadow:0 1px 0 var(--border2);
+}
+
+/* ── Steps ── */
+.steps{counter-reset:step;margin-bottom:14px}
+.step{
+  display:flex;gap:12px;padding:10px 0;
+  border-bottom:1px solid var(--border);
+}
+.step:last-child{border-bottom:none}
+.step-n{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--pk);color:#fff;
+  font-size:11px;font-weight:700;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;margin-top:1px;
+}
+.step-body{flex:1;min-width:0}
+.step-body strong{display:block;font-size:13px;font-weight:600;margin-bottom:3px}
+.step-body p{margin-bottom:0;font-size:12.5px}
+
+/* ── Search bar ── */
+.search-wrap{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--r2);padding:8px 12px;margin-bottom:20px;
+}
+.search-wrap input{
+  background:none;border:none;outline:none;
+  color:var(--text);font-size:13px;width:100%;font-family:inherit;
+}
+.search-wrap input::placeholder{color:var(--text3)}
+
+/* ── Overlay móvil ── */
+.mov{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.5)}
+.mov.open{display:block}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0);box-shadow:var(--shadow)}
+  .main{margin-left:0}
+  .hmenu{display:flex}
+  .content{padding:18px 14px 40px}
+  .card-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="mov" class="mov" onclick="cls()"></div>
+
+<aside class="sidebar" id="sb">
+  <div class="slogo">
+    <div class="lico">🌸</div>
+    <div class="ltxt"><strong>GinecoApp Pro</strong><span>Manual de uso</span></div>
+  </div>
+  <nav class="snav">
+    <div class="snlbl">Introducción</div>
+    <a class="sna on" onclick="nav('inicio',this)"><span class="ico">🏠</span>Inicio rápido</a>
+    <a class="sna" onclick="nav('interfaz',this)"><span class="ico">🖥️</span>Interfaz</a>
+
+    <div class="snlbl">Pacientes</div>
+    <a class="sna" onclick="nav('registro',this)"><span class="ico">➕</span>Registro de pacientes</a>
+    <a class="sna" onclick="nav('formulario',this)"><span class="ico">📋</span>Formulario clínico</a>
+    <a class="sna" onclick="nav('historial',this)"><span class="ico">📈</span>Historial longitudinal</a>
+
+    <div class="snlbl">Herramientas clínicas</div>
+    <a class="sna" onclick="nav('algoritmos',this)"><span class="ico">🔬</span>Algoritmos diagnósticos</a>
+    <a class="sna" onclick="nav('tratamiento',this)"><span class="ico">💊</span>Tratamiento</a>
+    <a class="sna" onclick="nav('fertilidad',this)"><span class="ico">🌱</span>Fertilidad</a>
+    <a class="sna" onclick="nav('calculadoras',this)"><span class="ico">📐</span>Calculadoras</a>
+
+    <div class="snlbl">Gestión</div>
+    <a class="sna" onclick="nav('dashboard',this)"><span class="ico">📊</span>Dashboard</a>
+    <a class="sna" onclick="nav('informes',this)"><span class="ico">📄</span>Informes clínicos</a>
+    <a class="sna" onclick="nav('exportar',this)"><span class="ico">📤</span>Exportar e importar</a>
+
+    <div class="snlbl">Referencia</div>
+    <a class="sna" onclick="nav('atajos',this)"><span class="ico">⌨️</span>Atajos y gestos</a>
+    <a class="sna" onclick="nav('guias',this)"><span class="ico">📚</span>Guías clínicas</a>
+    <a class="sna" onclick="nav('datos',this)"><span class="ico">🗄️</span>Datos y privacidad</a>
+  </nav>
+  <div class="sfoot">
+    <div>GinecoApp Pro v2.1</div>
+    <div style="margin-top:3px"><a href="gineapp.html">← Volver a la aplicación</a></div>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <button class="hmenu" onclick="tog()">☰</button>
+    <div class="topbar-title" id="ttl">Inicio rápido</div>
+    <div style="flex:1"></div>
+    <button class="tbtn" id="thbtn" onclick="toggleTheme()" title="Modo claro/oscuro">🌙</button>
+    <a class="tbtn" href="gineapp.html" title="Volver a la app" style="margin-left:6px">← App</a>
+  </header>
+
+  <div class="content">
+
+    <!-- INICIO RÁPIDO -->
+    <div class="section on" id="s-inicio">
+      <div class="page-title">Inicio rápido</div>
+      <div class="page-sub">GinecoApp Pro es una aplicación clínica de un solo archivo para el manejo de pacientes con miomas uterinos y endometriosis, basada en ESHRE 2022 y SEGO 2025.</div>
+
+      <div class="box bo"><div class="bt">✅ Sin instalación ni servidor</div>GinecoApp Pro funciona completamente en el navegador. No requiere conexión a internet después de la primera carga. Los datos se guardan en el propio dispositivo.</div>
+
+      <h2>Primeros pasos</h2>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-body"><strong>Abrir el archivo</strong><p>Abre <code>gineapp.html</code> directamente en tu navegador (Chrome, Firefox, Safari o Edge). No necesitas instalarlo ni subirlo a ningún servidor.</p></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-body"><strong>Cargar los datos demo</strong><p>Pulsa <strong>🧪 Cargar demo</strong> en el Dashboard para ver 5 pacientes de ejemplo con casos clínicos reales. Ideal para explorar la app antes de introducir datos propios.</p></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-body"><strong>Registrar tu primera paciente</strong><p>Ve a <strong>Nueva Paciente</strong> en el menú lateral o pulsa ➕ en el bottom nav (móvil). El formulario tiene 5 tabs: Datos personales, Síntomas, Diagnóstico, Tratamiento y Fertilidad.</p></div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-body"><strong>Explorar las herramientas clínicas</strong><p>Los algoritmos diagnósticos, las calculadoras (EFI, STEPW, EVA, BB) y las guías ESHRE/SEGO están disponibles sin necesidad de tener pacientes registradas.</p></div></div>
+        <div class="step"><div class="step-n">5</div><div class="step-body"><strong>Hacer un backup</strong><p>Ve a <strong>Informes → Exportar</strong> y descarga un JSON completo de tus datos. Guárdalo en un lugar seguro con regularidad.</p></div></div>
+      </div>
+
+      <h2>¿Qué incluye la app?</h2>
+      <div class="card-grid">
+        <div class="card"><div style="font-size:20px;margin-bottom:8px">👩‍⚕️</div><strong style="font-size:13px">Gestión de pacientes</strong><p style="margin-top:5px">Registro completo, búsqueda, filtros por patología y deseo gestacional, historial longitudinal automático.</p></div>
+        <div class="card"><div style="font-size:20px;margin-bottom:8px">🔬</div><strong style="font-size:13px">Algoritmos diagnósticos</strong><p style="margin-top:5px">Endometriosis (ESHRE 2022), Miomas (SEGO 2025), clasificación rASRM y FIGO.</p></div>
+        <div class="card"><div style="font-size:20px;margin-bottom:8px">📐</div><strong style="font-size:13px">Calculadoras interactivas</strong><p style="margin-top:5px">EFI, STEPW, EVA y Biberoglu & Behrman con resultado en tiempo real.</p></div>
+        <div class="card"><div style="font-size:20px;margin-bottom:8px">🧭</div><strong style="font-size:13px">Guía clínica contextual</strong><p style="margin-top:5px">Recomendaciones ESHRE/SEGO específicas para cada paciente abierta, con navegación directa.</p></div>
+        <div class="card"><div style="font-size:20px;margin-bottom:8px">📄</div><strong style="font-size:13px">Informes clínicos</strong><p style="margin-top:5px">5 tipos de informe (completo, diagnóstico, tratamiento, fertilidad, derivación). Imprimibles en A4.</p></div>
+        <div class="card"><div style="font-size:20px;margin-bottom:8px">📤</div><strong style="font-size:13px">Exportación completa</strong><p style="margin-top:5px">JSON (backup), CSV (estadística), Excel (.xls). Importación con 3 modos: fusionar, reemplazar o solo nuevas.</p></div>
+      </div>
+    </div>
+
+    <!-- INTERFAZ -->
+    <div class="section" id="s-interfaz">
+      <div class="page-title">Interfaz</div>
+      <div class="page-sub">Descripción de los elementos principales de navegación y uso en escritorio y móvil.</div>
+
+      <h2>Barra lateral (escritorio)</h2>
+      <p>El menú lateral está siempre visible en pantallas ≥768px. Contiene acceso directo a las 9 secciones organizadas en tres grupos: Principal, Evaluación y Herramientas. El badge rosa junto a «Pacientes» muestra el número total registradas.</p>
+
+      <h2>Topbar</h2>
+      <p>La barra superior contiene el <strong>buscador global</strong> (filtra pacientes por nombre o NHC y navega automáticamente a la lista), el <strong>toggle de tema</strong> 🌙/☀️ y, en móvil, el botón ☰ para abrir el drawer lateral.</p>
+
+      <h2>Bottom navigation (móvil)</h2>
+      <p>En pantallas &lt;768px aparece una barra inferior con 5 botones: Dashboard, Pacientes, Nueva, Algoritmos y <strong>⋯ Más</strong>. El menú Más despliega un grid con Tratamiento, Fertilidad, Escalas, Guías, Informes y el toggle de tema.</p>
+
+      <h2>Modal de paciente</h2>
+      <p>Al tocar cualquier fila de paciente se abre un panel deslizante desde la parte inferior con toda la información clínica. En móvil se puede cerrar con un swipe hacia abajo. El footer del modal tiene 4 acciones:</p>
+      <ul>
+        <li><strong>📄 Informe</strong> — genera el informe clínico completo de la paciente</li>
+        <li><strong>🧭 Guía clínica</strong> — muestra recomendaciones ESHRE/SEGO contextuales</li>
+        <li><strong>✏️ Editar</strong> — abre el formulario con los datos cargados</li>
+        <li><strong>🗑 Eliminar</strong> — elimina la paciente (con confirmación)</li>
+      </ul>
+
+      <h2>Modo oscuro / claro</h2>
+      <p>El tema se cambia con el botón 🌙/☀️ en la topbar o en el menú Más (móvil). La preferencia se guarda automáticamente y persiste entre sesiones.</p>
+    </div>
+
+    <!-- REGISTRO -->
+    <div class="section" id="s-registro">
+      <div class="page-title">Registro de pacientes</div>
+      <div class="page-sub">Cómo buscar, filtrar, crear y eliminar pacientes.</div>
+
+      <h2>Búsqueda global</h2>
+      <p>El campo de búsqueda en la topbar filtra por <strong>nombre completo</strong> y <strong>NHC</strong> en tiempo real. Al escribir, la app navega automáticamente a la sección Pacientes y aplica el filtro. Atajo de teclado: <kbd>Ctrl</kbd>+<kbd>K</kbd>.</p>
+
+      <h2>Filtros de lista</h2>
+      <p>En la sección Pacientes hay dos selectores de filtro combinables:</p>
+      <ul>
+        <li><strong>Patología:</strong> Todas / Endometriosis / Miomas / Ambas</li>
+        <li><strong>Deseo gestacional:</strong> Todas / Desean gestación / No gestación</li>
+      </ul>
+
+      <h2>Nueva paciente</h2>
+      <p>Accede desde el menú lateral, el botón ➕ del bottom nav o la quick-action del dashboard. El formulario tiene 5 tabs con <strong>badges de completitud</strong> que indican cuántos campos clave tiene cada pestaña rellenos (verde ✓ = completo, naranja N/M = parcial).</p>
+
+      <div class="box bw"><div class="bt">⚠️ Validación clínica</div>Al guardar, la app detecta automáticamente incoherencias (ej: rASRM con diagnóstico de miomas, TRA activa sin deseo gestacional, valores analíticos fuera de rango). Se muestra un aviso no bloqueante — puedes guardar igualmente o volver a corregir.</div>
+
+      <h2>Editar paciente</h2>
+      <p>Desde el modal de paciente pulsa <strong>✏️ Editar</strong>, o desde la lista de pacientes pulsa el icono ✏️ que aparece al pasar el cursor (o siempre visible en móvil). Al guardar una edición con cambios clínicos relevantes, se genera automáticamente una entrada en el <strong>historial longitudinal</strong>.</p>
+
+      <h2>Eliminar paciente</h2>
+      <p>Desde el modal de paciente, botón <strong>🗑 Eliminar</strong>. La acción pide confirmación y no se puede deshacer. Se recomienda exportar un backup JSON antes de eliminar registros.</p>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="section" id="s-formulario">
+      <div class="page-title">Formulario clínico</div>
+      <div class="page-sub">Descripción de los 5 tabs del formulario de paciente y sus campos.</div>
+
+      <h2>Tab 0 — Datos personales</h2>
+      <p>Nombre completo (obligatorio), NHC, fecha de nacimiento, estado civil, teléfono, IMC, menarquia, paridad (formato G/P/A), anticoncepción actual, deseo gestacional y antecedentes familiares (chips).</p>
+
+      <h2>Tab 1 — Síntomas</h2>
+      <p>Chips de síntomas ESHRE (dismenorrea, dispareunia profunda, disquecia, disuria, infertilidad, fatiga crónica, etc.), sliders de EVA dismenorrea y EVA dolor pélvico (0–10), duración de síntomas, demora diagnóstica, observaciones y <strong>EHP-5</strong> de calidad de vida.</p>
+
+      <h3>EHP-5 — Calidad de vida (ESHRE 2022 Rec.38)</h3>
+      <p>Cinco dominios evaluados en escala 0–3 (Nunca / A veces / Frecuentemente / Siempre):</p>
+      <ul>
+        <li>🏃 Actividad diaria / trabajo</li>
+        <li>❤️ Vida sexual</li>
+        <li>👥 Relaciones sociales / familia</li>
+        <li>🧠 Bienestar emocional</li>
+        <li>😴 Sueño y energía</li>
+      </ul>
+      <table class="tbl"><tr><th>Score total</th><th>Interpretación</th></tr>
+        <tr><td>0–3</td><td>Sin impacto significativo</td></tr>
+        <tr><td>4–7</td><td>Impacto moderado</td></tr>
+        <tr><td>8–11</td><td>Impacto severo</td></tr>
+        <tr><td>12–15</td><td>Impacto muy severo — acción prioritaria</td></tr>
+      </table>
+
+      <h2>Tab 2 — Diagnóstico</h2>
+      <p>Diagnóstico principal (endometriosis / miomas / ambas / sospecha) y fecha. Los campos condicionales aparecen según el diagnóstico:</p>
+      <ul>
+        <li><strong>Endometriosis:</strong> estadio rASRM (I–IV), método diagnóstico, localización lesiones, tamaño endometrioma, adenomiosis</li>
+        <li><strong>Miomas:</strong> tipo FIGO (0–8), número, tamaño mayor, volumen uterino, distorsión cavitaria, síntomas, Hgb, AMH</li>
+      </ul>
+
+      <h2>Tab 3 — Tratamiento</h2>
+      <p>Estado de tratamiento, chips de tratamiento médico (ACO, progestágenos, DIU-LNG, agonistas/antagonistas GnRH, etc.), chips de intervenciones quirúrgicas, respuesta al tratamiento, próxima revisión y plan terapéutico.</p>
+
+      <h2>Tab 4 — Fertilidad</h2>
+      <p>Tiempo de búsqueda de gestación, EFI estimado (0–10), factor masculino, permeabilidad tubárica, TRA realizadas, ciclos FIV previos y notas de fertilidad.</p>
+
+      <div class="box bi"><div class="bt">💡 Badges de completitud</div>Cada tab muestra un badge que indica cuántos campos clave tienen valor. Verde ✓ = todos completos · Naranja N/M = parcialmente relleno. Los badges se actualizan en tiempo real al modificar cualquier campo.</div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div class="section" id="s-historial">
+      <div class="page-title">Historial longitudinal</div>
+      <div class="page-sub">Seguimiento automático de la evolución clínica de cada paciente a lo largo del tiempo.</div>
+
+      <h2>Cómo funciona</h2>
+      <p>Cada vez que guardas una edición de una paciente, la app compara automáticamente la versión nueva con la anterior en los campos clínicos relevantes. Si detecta algún cambio, crea una <strong>entrada en el historial</strong> sin que tengas que hacer nada extra.</p>
+
+      <h2>Campos monitorizados</h2>
+      <p>Se genera una nueva entrada cuando cambia cualquiera de estos valores:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+        <span class="tag tp">EVA dismenorrea</span><span class="tag tp">EVA pélvico</span>
+        <span class="tag tp">EHP-5</span><span class="tag tg">Hemoglobina</span>
+        <span class="tag tg">AMH</span><span class="tag to">Endometrioma (mm)</span>
+        <span class="tag to">Mioma mayor (mm)</span><span class="tag to">Volumen uterino</span>
+        <span class="tag tpu">Tratamiento médico</span><span class="tag tpu">Cirugías</span>
+        <span class="tag tgr">Respuesta al tx</span><span class="tag tgr">Estado tratamiento</span>
+        <span class="tag tgr">EFI</span>
+      </div>
+      <p>Los cambios no clínicos (corregir un teléfono, ajustar una fecha) <strong>no generan entrada</strong> en el historial.</p>
+
+      <h2>Visualización en el modal</h2>
+      <p>Las pacientes con 2 o más entradas muestran el bloque <strong>📈 HISTORIAL</strong> en su modal, con:</p>
+      <ul>
+        <li><strong>Badge de tendencia</strong> — ↓ EVA mejora / ↑ EVA empeora / → estable</li>
+        <li><strong>Sparkline EVA</strong> (rosa) — tendencia del dolor en las últimas 8 visitas</li>
+        <li><strong>Sparkline Hgb</strong> (verde) — si hay datos analíticos suficientes</li>
+        <li><strong>Timeline vertical</strong> — fecha, valores clave, tratamiento y nota del plan</li>
+      </ul>
+      <p>Las primeras 4 entradas son visibles directamente; el resto se colapsa con un botón «Ver N entradas anteriores».</p>
+
+      <h2>En el informe clínico completo</h2>
+      <p>El informe clínico completo incluye una sección «6. Historial de Seguimiento» con todas las visitas ordenadas cronológicamente, lista para imprimir o adjuntar a la historia clínica.</p>
+
+      <div class="box bw"><div class="bt">⚠️ Límite de entradas</div>Se conservan las últimas 50 entradas por paciente. Las más antiguas se descartan automáticamente al superar ese límite.</div>
+    </div>
+
+    <!-- ALGORITMOS -->
+    <div class="section" id="s-algoritmos">
+      <div class="page-title">Algoritmos diagnósticos</div>
+      <div class="page-sub">Protocolos clínicos ESHRE 2022 y SEGO 2025 integrados en la app.</div>
+
+      <h2>Tab Endometriosis</h2>
+      <p>Algoritmo diagnóstico ESHRE 2022 en 4 pasos: triaje sintomático → imagen (eco TV / RM) → tratamiento empírico → laparoscopía si falló todo. Incluye clasificación rASRM (estadios I–IV) con criterios y localización de endometriosis profunda.</p>
+      <div class="box bo"><div class="bt">🔑 Cambio clave ESHRE 2022</div>La imagen y el tratamiento empírico reemplazan la laparoscopía como primer paso diagnóstico en la mayoría de pacientes (Rec.6).</div>
+
+      <h2>Tab Miomas</h2>
+      <p>Algoritmo diagnóstico SEGO 2025 con clasificación FIGO obligatoria (tipos 0–8), indicaciones de eco TV, RM y escala STEPW para histeroscopia.</p>
+
+      <h2>Tab Dolor & Alertas</h2>
+      <p>Líneas terapéuticas del dolor en endometriosis (1ª: ACO/progestágenos · 2ª: GnRH agonistas/antagonistas · Refractario: inhibidores aromatasa) y advertencias clínicas críticas de ESHRE 2022 (no biomarcadores, no embarazo como tratamiento, no supresión ovárica aislada para fertilidad).</p>
+    </div>
+
+    <!-- TRATAMIENTO -->
+    <div class="section" id="s-tratamiento">
+      <div class="page-title">Tratamiento</div>
+      <div class="page-sub">Guías de tratamiento médico y quirúrgico según ESHRE 2022 y SEGO 2025.</div>
+
+      <h2>Endo — Dolor</h2>
+      <p>Algoritmo de tratamiento del dolor en endometriosis con líneas terapéuticas diferenciadas, principios quirúrgicos (excisión &gt; ablación, quistectomía &gt; drenaje) y recomendaciones de prevención de recurrencia post-cirugía (LNG-IUS o ACO ≥18–24 meses, Rec.65).</p>
+
+      <h2>Miomas — Médico</h2>
+      <p>Tratamiento médico actualizado SEGO 2025: antagonistas GnRH (Relugolix 40mg+TAB, Linzagolix), manejo expectante, criterios de seguimiento y optimización prequirúrgica de hemoglobina.</p>
+
+      <h2>Miomas — Cirugía</h2>
+      <p>Selección de técnica quirúrgica según tipo FIGO: histeroscopia (tipos 0–2), laparoscopia, ablación térmica (HIFU/RF) y miomectomía abdominal. Enlace directo a la calculadora STEPW interactiva.</p>
+
+      <h2>Postmenopausia</h2>
+      <p>Endometriosis activa tras la menopausia (2–5% prevalencia), riesgo de transformación maligna, THS con estrógenoi+progestágeno vs estrógenos solos, y datos de riesgo oncológico absoluto.</p>
+    </div>
+
+    <!-- FERTILIDAD -->
+    <div class="section" id="s-fertilidad">
+      <div class="page-title">Fertilidad</div>
+      <div class="page-sub">Algoritmos reproductivos y calculadora EFI interactiva según ESHRE 2022 y SEGO 2025.</div>
+
+      <h2>Endometriosis e infertilidad</h2>
+      <p>Algoritmo ESHRE 2022: calcular EFI post-cirugía → EFI ≥7: intento natural/IUI → EFI &lt;7: FIV/ICSI. No supresión ovárica aislada (Rec.39). Preservación de fertilidad antes de cirugía ovárica en ≤35 años (Rec.59).</p>
+
+      <h2>Miomas e infertilidad</h2>
+      <p>SEGO 2025: miomectomía histeroscópica obligatoria para tipos 0–2 antes de TRA. Antagonistas GnRH 3 meses preconcepcional para intramurales &gt;4cm. EAU contraindicada en deseo gestacional.</p>
+
+      <h2>Calculadora EFI</h2>
+      <p>El <strong>Endometriosis Fertility Index</strong> se calcula con 6 parámetros: edad, duración de infertilidad, embarazo previo, función de tuba/ovario, estadio rASRM y puntos totales rASRM. Score 0–10:</p>
+      <table class="tbl">
+        <tr><th>EFI</th><th>Interpretación</th><th>Conducta</th></tr>
+        <tr><td>≥7</td><td>Favorable</td><td>Intento natural o IUI (hasta 6 meses)</td></tr>
+        <tr><td>4–6</td><td>Intermedio</td><td>Discutir FIV/ICSI vs intento natural</td></tr>
+        <tr><td>&lt;4</td><td>Desfavorable</td><td>FIV/ICSI directa</td></tr>
+      </table>
+    </div>
+
+    <!-- CALCULADORAS -->
+    <div class="section" id="s-calculadoras">
+      <div class="page-title">Calculadoras</div>
+      <div class="page-sub">Cuatro herramientas de evaluación clínica interactivas disponibles en Escalas & Scores.</div>
+
+      <h2>EVA — Escala Visual Analógica</h2>
+      <p>Slider 0–10 para dolor. Selecciona el tipo (dismenorrea, dolor pélvico crónico, dispareunia, disquecia o disuria). El color y la etiqueta cambian en tiempo real: verde (0–3) / naranja (4–6) / rojo (7–10).</p>
+
+      <h2>Biberoglu & Behrman</h2>
+      <p>Escala de 4 síntomas (dismenorrea, dolor pélvico, dispareunia, disquecia/disuria), cada uno 0–3. Score total 0–12: ≤3 leve · 4–7 moderado · ≥8 severo.</p>
+
+      <h2>EFI — Endometriosis Fertility Index</h2>
+      <p>Ver sección <a href="#" onclick="nav('fertilidad',null)">Fertilidad</a>. Disponible también en la sección Escalas & Scores.</p>
+
+      <h2>STEPW — Histeroscopia</h2>
+      <p>Escala de complejidad de la miomectomía histeroscópica. Cinco parámetros con chips de selección exclusiva:</p>
+      <table class="tbl">
+        <tr><th>Parámetro</th><th>0 pts</th><th>1 pt</th><th>2 pts</th></tr>
+        <tr><td><strong>S</strong>ize</td><td>&lt;2 cm</td><td>2–5 cm</td><td>&gt;5 cm</td></tr>
+        <tr><td><strong>T</strong>opografía</td><td>Ístmico</td><td>Corporal</td><td>Fúndico</td></tr>
+        <tr><td><strong>E</strong>xtensión</td><td>0% (pediculado)</td><td>1–50%</td><td>&gt;50%</td></tr>
+        <tr><td><strong>P</strong>enetración</td><td>Tipo 0</td><td>Tipo 1</td><td>Tipo 2</td></tr>
+        <tr><td><strong>W</strong>all lateral</td><td>No</td><td>—</td><td>Sí</td></tr>
+      </table>
+      <table class="tbl">
+        <tr><th>Score</th><th>Riesgo</th><th>Conducta</th></tr>
+        <tr><td>0–4</td><td><span class="tag tg">Bajo</span></td><td>1 tiempo quirúrgico</td></tr>
+        <tr><td>5–6</td><td><span class="tag to">Intermedio</span></td><td>Valorar individualmente, cirujano experto</td></tr>
+        <tr><td>7–10</td><td><span class="tag tp" style="background:rgba(232,85,85,.15);color:var(--rd);border-color:rgba(232,85,85,.25)">Alto</span></td><td>2 tiempos o técnica alternativa</td></tr>
+      </table>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="section" id="s-dashboard">
+      <div class="page-title">Dashboard</div>
+      <div class="page-sub">Vista general del estado de la consulta.</div>
+
+      <h2>Tarjetas estadísticas</h2>
+      <p>4 tarjetas en la parte superior muestran el total de pacientes, número con endometriosis, con miomas y con deseo gestacional.</p>
+
+      <h2>Distribución por patología</h2>
+      <p>Donut SVG animado con leyenda y barras de porcentaje para endometriosis, miomas, ambas patologías y deseo gestacional.</p>
+
+      <h2>⏰ Revisiones próximas</h2>
+      <p>Widget que muestra las pacientes con cita en los <strong>próximos 14 días</strong>, ordenadas por fecha. Las citas vencidas aparecen en rojo con indicador de días transcurridos. El badge rojo en la cabecera del widget indica el número de revisiones vencidas. Se actualiza automáticamente al guardar cualquier paciente.</p>
+
+      <h2>Últimas pacientes</h2>
+      <p>Las 5 pacientes modificadas más recientemente, con timestamp relativo (Hoy / Ayer / Hace Nd). Al hacer clic se abre su modal.</p>
+
+      <h2>Accesos rápidos</h2>
+      <p>Tres botones: Nueva paciente, Algoritmos Dx y 🧪 Cargar demo (solo disponible si la base de datos está vacía).</p>
+    </div>
+
+    <!-- INFORMES -->
+    <div class="section" id="s-informes">
+      <div class="page-title">Informes clínicos</div>
+      <div class="page-sub">Generación, impresión y descarga de informes clínicos para cada paciente.</div>
+
+      <h2>Tipos de informe</h2>
+      <table class="tbl">
+        <tr><th>Tipo</th><th>Contenido</th></tr>
+        <tr><td>Informe Clínico Completo</td><td>Todos los datos: filiación, síntomas+EHP-5, diagnóstico, tratamiento, fertilidad, historial de seguimiento</td></tr>
+        <tr><td>Informe Diagnóstico</td><td>Datos personales + síntomas + diagnóstico detallado</td></tr>
+        <tr><td>Plan de Tratamiento</td><td>Estado, medicación, cirugías, respuesta y plan terapéutico</td></tr>
+        <tr><td>Informe de Fertilidad</td><td>Deseo gestacional, EFI, factor masculino, tubárico y TRA</td></tr>
+        <tr><td>Carta de Derivación</td><td>Carta estructurada para referir a otro especialista o centro</td></tr>
+      </table>
+
+      <h2>Seleccionar paciente</h2>
+      <p>El selector de paciente en Informes tiene <strong>búsqueda live</strong>: escribe el nombre o NHC y aparece una lista filtrada con avatar, edad y diagnóstico. Navegación con teclas ↑↓ y Enter.</p>
+
+      <h2>Acciones disponibles</h2>
+      <ul>
+        <li><strong>📄 Generar informe</strong> — renderiza el informe en pantalla</li>
+        <li><strong>🖨️ Imprimir</strong> — abre el diálogo de impresión del navegador (optimizado para A4)</li>
+        <li><strong>📋 Copiar</strong> — copia el texto del informe al portapapeles</li>
+        <li><strong>⬇️ Descargar HTML</strong> — descarga el informe como archivo HTML independiente</li>
+      </ul>
+
+      <p>Los informes también se pueden generar directamente desde el modal de paciente (botón 📄 Informe) o desde el icono 📄 en la lista de pacientes.</p>
+    </div>
+
+    <!-- EXPORTAR -->
+    <div class="section" id="s-exportar">
+      <div class="page-title">Exportar e importar</div>
+      <div class="page-sub">Backup, exportación estadística e importación de datos.</div>
+
+      <h2>Exportar a JSON</h2>
+      <p>Copia de seguridad completa de todos los datos (o un subconjunto filtrado por patología). Incluye metadatos de exportación. <strong>Formato recomendado para backups regulares.</strong></p>
+
+      <h2>Exportar a CSV</h2>
+      <p>Tabla de datos seleccionando las columnas a incluir (Datos personales, Síntomas & EVA, Diagnóstico, Tratamiento, Fertilidad, Laboratorio). Compatible con Excel ES (separador punto y coma, BOM UTF-8), Google Sheets y SPSS.</p>
+
+      <h2>Exportar a Excel (.xls)</h2>
+      <p>Tabla HTML formateada con colores que Excel abre nativamente. Mismas columnas que el CSV.</p>
+
+      <h2>Estadísticas globales</h2>
+      <p>Resumen estadístico de la consulta: distribución diagnóstica, medias de edad / EVA / EHP-5 / Hgb / AMH, tratamientos más usados y distribución de estadios rASRM. Exportable como CSV.</p>
+
+      <h2>Importar JSON</h2>
+      <p>Tres modos de importación:</p>
+      <ul>
+        <li><strong>Fusionar</strong> — mantiene las pacientes existentes y añade las nuevas</li>
+        <li><strong>Reemplazar todo</strong> — borra los datos actuales y los sustituye por los del archivo</li>
+        <li><strong>Solo añadir nuevas</strong> — añade únicamente las pacientes cuyo NHC no existe ya</li>
+      </ul>
+      <div class="box br"><div class="bt">⚠️ Precaución</div>El modo «Reemplazar todo» es irreversible. Exporta un backup antes de importar.</div>
+    </div>
+
+    <!-- ATAJOS -->
+    <div class="section" id="s-atajos">
+      <div class="page-title">Atajos y gestos</div>
+      <div class="page-sub">Accesos rápidos de teclado y gestos táctiles disponibles.</div>
+
+      <h2>Atajos de teclado</h2>
+      <table class="tbl">
+        <tr><th>Atajo</th><th>Acción</th></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>K</kbd></td><td>Enfocar el buscador global</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Cerrar el modal de paciente abierto</td></tr>
+        <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Navegar por el selector de pacientes en Informes</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Seleccionar paciente en el buscador de Informes</td></tr>
+      </table>
+
+      <h2>Gestos táctiles (móvil)</h2>
+      <table class="tbl">
+        <tr><th>Gesto</th><th>Acción</th></tr>
+        <tr><td>Swipe hacia abajo</td><td>Cerrar el modal de paciente</td></tr>
+        <tr><td>Tap en overlay</td><td>Cerrar sidebar o menú Más</td></tr>
+      </table>
+
+      <h2>Navegación contextual</h2>
+      <p>Al abrir una paciente, el panel <strong>🧭 Guía Clínica Contextual</strong> muestra botones «Ver guía →» que navegan directamente a la sección y tab relevante para esa paciente. Al pulsar «Guía clínica» en el footer del modal se hace scroll al panel si ya está visible.</p>
+    </div>
+
+    <!-- GUÍAS -->
+    <div class="section" id="s-guias">
+      <div class="page-title">Guías clínicas integradas</div>
+      <div class="page-sub">Referencias normativas que fundamentan los algoritmos y recomendaciones de la app.</div>
+
+      <h2>ESHRE 2022 — Endometriosis</h2>
+      <p>La guía completa de la European Society of Human Reproduction and Embryology publicada en 2022. GinecoApp Pro implementa las 109 recomendaciones (Rec.1–109 + GPP) en sus algoritmos, tratamientos y calculadoras.</p>
+      <p><strong>Áreas cubiertas:</strong> diagnóstico (imagen + empírico), clasificación rASRM, tratamiento del dolor (1ª/2ª/3ª línea), cirugía (excisión, quistectomía, endometriosis profunda), fertilidad (EFI, FIV), adolescentes, postmenopausia y cáncer asociado.</p>
+
+      <h2>SEGO 2025 — Miomas Uterinos</h2>
+      <p>Guía de la Sociedad Española de Ginecología y Obstetricia publicada en 2025. Cubre diagnóstico (clasificación FIGO obligatoria, escala STEPW), nuevos tratamientos médicos (Relugolix, Linzagolix), indicaciones quirúrgicas y manejo de la fertilidad.</p>
+
+      <h2>Visualización de guías</h2>
+      <p>La sección <strong>Guías 2025</strong> del menú principal muestra ambas guías en formato timeline (ESHRE en rosa, SEGO en naranja) con los puntos clave de cada área. Es una referencia rápida, no un reemplazo del documento completo.</p>
+
+      <div class="box bi"><div class="bt">📌 Actualización de guías</div>Las guías clínicas se actualizan periódicamente. GinecoApp Pro refleja el estado de ESHRE 2022 y SEGO 2025. Consulta siempre las versiones originales para decisiones clínicas complejas.</div>
+    </div>
+
+    <!-- DATOS Y PRIVACIDAD -->
+    <div class="section" id="s-datos">
+      <div class="page-title">Datos y privacidad</div>
+      <div class="page-sub">Cómo se almacenan y protegen los datos de los pacientes.</div>
+
+      <h2>Almacenamiento local</h2>
+      <p>Todos los datos se guardan exclusivamente en el <strong>localStorage del navegador</strong> de tu dispositivo. No se envían a ningún servidor externo ni se comparten con terceros. GinecoApp Pro no tiene backend, no usa cookies de rastreo y no requiere cuenta de usuario.</p>
+
+      <table class="tbl">
+        <tr><th>Clave</th><th>Contenido</th></tr>
+        <tr><td><code>gapp2_pts</code></td><td>Array JSON con todas las pacientes y su historial</td></tr>
+        <tr><td><code>gapp2_theme</code></td><td>Preferencia de tema (dark / light)</td></tr>
+      </table>
+
+      <h2>Capacidad de almacenamiento</h2>
+      <p>IndexedDB permite  <strong>cientos de MB por origen</strong>. Con el historial longitudinal activado, cada paciente ocupa aproximadamente 7–10 KB con 3–5 entradas de historial. Estimación orientativa de capacidad:</p>
+      <ul>
+        <li>Sin historial: ~50000–70000 pacientes</li>
+        <li>Con historial de 5 entradas: ~20000–30000 pacientes</li>
+        <li>Con historial de 10 entradas: ~10000–15000 pacientes</li>
+      </ul>
+      <div class="box bw"><div class="bt">⚠️ Recomendación</div>Realiza backups JSON periódicos desde Informes → Exportar, especialmente antes de limpiar el navegador o cambiar de dispositivo. Los datos en IndexedDB se pierden al borrar el historial del navegador o al reinstalarlo.</div>
+
+      <h2>RGPD y datos clínicos</h2>
+      <p>Los archivos exportados (JSON, CSV, Excel) contienen datos clínicos de carácter personal. Su almacenamiento y transmisión deben cumplir con el <strong>Reglamento General de Protección de Datos (RGPD)</strong> y la normativa sanitaria aplicable. GinecoApp Pro no aplica cifrado adicional a los datos exportados — es responsabilidad del profesional protegerlos adecuadamente.</p>
+
+      <h2>Borrar todos los datos</h2>
+      <p>En <strong>Informes → Importar → 🗑️ Borrar todas las pacientes</strong>. La acción pide doble confirmación y es irreversible. Se recomienda exportar un backup antes.</p>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// ── Tema ──
+let dark = localStorage.getItem('gapp2_theme') !== 'light';
+function applyT(){
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  const btn = document.getElementById('thbtn');
+  if(btn) btn.textContent = dark ? '🌙' : '☀️';
+  localStorage.setItem('gapp2_theme', dark ? 'dark' : 'light');
+}
+function toggleTheme(){ dark = !dark; applyT(); }
+applyT();
+
+// ── Navegación ──
+const titles = {
+  inicio:'Inicio rápido', interfaz:'Interfaz', registro:'Registro de pacientes',
+  formulario:'Formulario clínico', historial:'Historial longitudinal',
+  algoritmos:'Algoritmos diagnósticos', tratamiento:'Tratamiento',
+  fertilidad:'Fertilidad', calculadoras:'Calculadoras',
+  dashboard:'Dashboard', informes:'Informes clínicos',
+  exportar:'Exportar e importar', atajos:'Atajos y gestos',
+  guias:'Guías clínicas', datos:'Datos y privacidad'
+};
+
+let _current = 'inicio';
+function nav(id, btn){
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('on'));
+  const el = document.getElementById('s-'+id);
+  if(el) el.classList.add('on');
+  document.querySelectorAll('.sna').forEach(a => a.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  document.getElementById('ttl').textContent = titles[id] || id;
+  _current = id;
+  cls();
+  window.scrollTo(0,0);
+  // Actualizar URL hash para que el botón atrás funcione
+  history.pushState({id}, '', '#' + id);
+}
+
+// Manejar navegación con hash al cargar
+window.addEventListener('load', () => {
+  const hash = location.hash.replace('#','');
+  if(hash && titles[hash]){
+    const btn = [...document.querySelectorAll('.sna')].find(a => {
+      return a.getAttribute('onclick') && a.getAttribute('onclick').includes("'"+hash+"'");
+    });
+    nav(hash, btn);
+  }
+});
+window.addEventListener('popstate', e => {
+  if(e.state && e.state.id) nav(e.state.id, null);
+});
+
+// ── Sidebar móvil ──
+function tog(){ document.getElementById('sb').classList.toggle('open'); document.getElementById('mov').classList.toggle('open'); }
+function cls(){ document.getElementById('sb').classList.remove('open'); document.getElementById('mov').classList.remove('open'); }
+</script>
+</body>
+</html>
