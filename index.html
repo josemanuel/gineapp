@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -1129,12 +1129,137 @@ button,a{touch-action:manipulation}
 <div class="toast" id="toast"></div>
 <script>
 // ═══════════════════════════════════════════════
+// IDB — CAPA DE PERSISTENCIA IndexedDB
+// ═══════════════════════════════════════════════
+const idb=(()=>{
+  const DB_NAME='GinecoAppPro',DB_VER=1;
+  const STORE='pacientes',ADJ='adjuntos';
+  let _db=null;
+
+  function _tx(stores,mode,fn){
+    return new Promise((res,rej)=>{
+      const tx=_db.transaction(stores,mode);
+      tx.onerror=()=>rej(tx.error);
+      res(fn(tx));
+    });
+  }
+  function _req(r){return new Promise((res,rej)=>{r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+
+  async function open(){
+    if(_db)return _db;
+    return new Promise((res,rej)=>{
+      const req=indexedDB.open(DB_NAME,DB_VER);
+      req.onupgradeneeded=e=>{
+        const db=e.target.result;
+        if(!db.objectStoreNames.contains(STORE))
+          db.createObjectStore(STORE,{keyPath:'id'});
+        if(!db.objectStoreNames.contains(ADJ)){
+          const s=db.createObjectStore(ADJ,{keyPath:'id'});
+          s.createIndex('pacienteId','pacienteId',{unique:false});
+        }
+      };
+      req.onsuccess=e=>{_db=e.target.result;res(_db);};
+      req.onerror=e=>rej(e.target.error);
+    });
+  }
+
+  async function getAll(){
+    await open();
+    return _tx(STORE,'readonly',tx=>_req(tx.objectStore(STORE).getAll()));
+  }
+
+  async function put(obj){
+    await open();
+    return _tx(STORE,'readwrite',tx=>_req(tx.objectStore(STORE).put(obj)));
+  }
+
+  async function del(id){
+    await open();
+    return _tx(STORE,'readwrite',tx=>_req(tx.objectStore(STORE).delete(id)));
+  }
+
+  async function putMany(arr){
+    if(!arr||!arr.length)return;
+    await open();
+    return new Promise((res,rej)=>{
+      const tx=_db.transaction(STORE,'readwrite');
+      const st=tx.objectStore(STORE);
+      tx.oncomplete=()=>res();
+      tx.onerror=()=>rej(tx.error);
+      arr.forEach(obj=>st.put(obj));
+    });
+  }
+
+  async function clearStore(){
+    await open();
+    return _tx(STORE,'readwrite',tx=>_req(tx.objectStore(STORE).clear()));
+  }
+
+  // ── Adjuntos (fase 4) ──
+  async function getAdjuntos(pacienteId){
+    await open();
+    return new Promise((res,rej)=>{
+      const tx=_db.transaction(ADJ,'readonly');
+      const idx=tx.objectStore(ADJ).index('pacienteId');
+      const req=idx.getAll(IDBKeyRange.only(pacienteId));
+      req.onsuccess=()=>res(req.result||[]);
+      req.onerror=()=>rej(req.error);
+    });
+  }
+
+  async function putAdjunto(adj){
+    await open();
+    return _tx(ADJ,'readwrite',tx=>_req(tx.objectStore(ADJ).put(adj)));
+  }
+
+  async function delAdjunto(id){
+    await open();
+    return _tx(ADJ,'readwrite',tx=>_req(tx.objectStore(ADJ).delete(id)));
+  }
+
+  async function clearAdjuntosByPaciente(pacienteId){
+    await open();
+    const adjs=await getAdjuntos(pacienteId);
+    if(!adjs.length)return;
+    return new Promise((res,rej)=>{
+      const tx=_db.transaction(ADJ,'readwrite');
+      const st=tx.objectStore(ADJ);
+      tx.oncomplete=()=>res();
+      tx.onerror=()=>rej(tx.error);
+      adjs.forEach(a=>st.delete(a.id));
+    });
+  }
+
+  return{open,getAll,put,del,putMany,clearStore,
+         getAdjuntos,putAdjunto,delAdjunto,clearAdjuntosByPaciente};
+})();
+
+// ═══════════════════════════════════════════════
 // STORE
 // ═══════════════════════════════════════════════
-let DB=JSON.parse(localStorage.getItem('gapp2_pts')||'[]');
+let DB=[];  // se carga desde IDB en el INIT async
 let cId=null,eId=null;
-const sv=()=>{localStorage.setItem('gapp2_pts',JSON.stringify(DB));uSt();buildReviewAlerts&&buildReviewAlerts();uBdg();updExpCount&&updExpCount();};
+// sv() eliminado — reemplazado por svPt(p) async (ver abajo)
 const gid=()=>'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+
+// ── Sustitutos de sv() ──
+// svPt(p): persiste UN registro en IDB y refresca la UI
+async function svPt(p){
+  try{
+    await idb.put(p);
+  }catch(err){
+    console.error('IDB write error:',err);
+    tst('Error al guardar — revisa el almacenamiento','er');
+  }
+  uiRefresh();
+}
+// uiRefresh(): actualiza contadores y widgets (era el cuerpo de sv() tras el setItem)
+function uiRefresh(){
+  uSt();
+  buildReviewAlerts&&buildReviewAlerts();
+  uBdg();
+  updExpCount&&updExpCount();
+}
 
 // ═══════════════════════════════════════════════
 // THEME
@@ -1426,24 +1551,24 @@ function savePt(){
   doSavePt(d);
 }
 
-function doSavePt(d){
+async function doSavePt(d){
   if(eId){
     const prev=DB.find(p=>p.id===eId)||{};
-    // Preservar historial existente y añadir nuevo snapshot si hay cambio relevante
     d.historial=prev.historial||[];
     if(hasClinicChange(prev,d)){
       d.historial=[mkSnap(d),...d.historial].slice(0,50);
     }
     const i=DB.findIndex(p=>p.id===eId);
     if(i>=0)DB[i]=d;
+    await svPt(d);
     tst('Paciente actualizada ✓','ok');
   } else {
-    // Nueva paciente: historial vacío, se añade snapshot inicial
     d.historial=[mkSnap(d)];
     DB.unshift(d);
+    await svPt(d);
     tst('Paciente registrada ✓','ok');
   }
-  sv();eId=null;
+  eId=null;
   go('pacientes',document.querySelectorAll('.nb')[1]);
 }
 
@@ -1543,9 +1668,11 @@ function hasClinicChange(prev,next){
   return arrDiff(prev.txMed,next.txMed)||arrDiff(prev.txQx,next.txQx);
 }
 function ePt(){const p=DB.find(p=>p.id===cId);if(!p)return;fillF(p);cM();go('nueva',document.querySelectorAll('.nb')[2]);}
-function dPt(){
+async function dPt(){
   if(!confirm('¿Eliminar esta paciente? No se puede deshacer.'))return;
-  DB=DB.filter(p=>p.id!==cId);sv();cM();rPL();tst('Paciente eliminada','er');
+  DB=DB.filter(p=>p.id!==cId);
+  try{await idb.del(cId);}catch(e){console.error('IDB del error:',e);}
+  cM();rPL();uiRefresh();tst('Paciente eliminada','er');
 }
 
 // ═══════════════════════════════════════════════
@@ -2472,9 +2599,11 @@ const DEMO=[
   {id:'demo_5',nombre:'Jiménez Torres, Lucía',nhc:'2024-005',fechaNac:'1995-09-12',estadoCivil:'Soltera',telefono:'+34 656 789 012',imc:'22.0',menarquia:'14',paridad:'G0 P0 A0',anticoncepcion:'Progestágenos (oral)',deseoGestacion:'futuro',antFam:[],sintomas:['Dismenorrea','Disuria','Hematuria cíclica'],evaD:'6',evaP:'3',ehp1:'1',ehp2:'1',ehp3:'0',ehp4:'1',ehp5:'1',duracion:'6–12 meses',demora:'<1 año',obsSint:'Dismenorrea severa con hematuria cíclica. Ecografía TV normal. RM pendiente.',dx:'sospecha',fechaDx:'2024-05-01',asrm:'',metodoDx:'Diagnóstico empírico',locEndo:[],tamEndo:'',adenomiosis:'',figo:'',numMiomas:'1',tamMioma:'',volUt:'',distorsion:'No',sintMioma:[],hgb:'13.1',amh:'3.8',notesDx:'Imagen negativa. Tratamiento empírico iniciado con progestágenos. Hematuria cíclica sugiere endometriosis vesical. RM pélvica solicitada.',estadoTx:'medico',txMed:['Progestágenos (oral)','AINEs'],txQx:[],respTx:'Parcial (EVA 5–6)',proxRev:'2026-06-24',planTx:'Esperar resultado RM. Si imagen negativa y empírico ineficaz: laparoscopía diagnóstica. Urología para descartar endometriosis vesical.',tiempoInf:'',efi:'',factorMasc:'',permTub:'',tra:'ninguna',ciclosFIV:'0',notesFert:'',createdAt:'2024-05-10T10:00:00.000Z',updatedAt:'2024-05-10T10:00:00.000Z',historial:[{id:'s5a',fecha:'2024-05-10T10:00:00.000Z',evaD:'6',evaP:'3',hgb:'13.1',amh:'3.8',tamEndo:'',tamMioma:'',volUt:'',txMed:['Progestágenos (oral)','AINEs'],txQx:[],respTx:'Parcial (EVA 5–6)',estadoTx:'medico',efi:'',proxRev:'2026-06-24',nota:'Primera visita. Hematuria cíclica. Eco negativa. Inicio empírico. RM solicitada.'}]}
 ];
 
-function loadDemo(){
+async function loadDemo(){
   if(DB.length>0){tst('Ya hay pacientes registradas','in');return;}
-  DB=[...DEMO];sv();rPL();dRec();uSt();uBdg();
+  DB=[...DEMO];
+  try{await idb.putMany(DB);}catch(e){console.error('IDB putMany error:',e);}
+  rPL();dRec();uiRefresh();
   tst('5 pacientes de demostración cargadas ✓','ok');
 }
 
@@ -2786,34 +2915,42 @@ function previewImp(input){
   };
   reader.readAsText(file,'UTF-8');
 }
-function doImport(){
+async function doImport(){
   if(!impData||!impData.length){tst('No hay datos para importar','er');return;}
   const mode=document.getElementById('impMode').value;
   let count=0;
+  let toWrite=[];
   if(mode==='replace'){
     DB=[...impData];count=impData.length;
+    try{await idb.clearStore();}catch(e){console.error('IDB clear error:',e);}
+    toWrite=DB;
   } else if(mode==='merge'){
     impData.forEach(np=>{
       const exists=DB.findIndex(p=>p.id===np.id);
-      if(exists>=0)DB[exists]={...DB[exists],...np};
-      else{DB.unshift(np);count++;}
+      if(exists>=0){DB[exists]={...DB[exists],...np};toWrite.push(DB[exists]);}
+      else{DB.unshift(np);toWrite.push(np);count++;}
     });
   } else { // new only
     impData.forEach(np=>{
       const exists=DB.find(p=>p.nhc&&p.nhc===np.nhc);
-      if(!exists){DB.unshift(np);count++;}
+      if(!exists){DB.unshift(np);toWrite.push(np);count++;}
     });
   }
-  sv();
+  try{await idb.putMany(toWrite);}catch(e){console.error('IDB putMany error:',e);}
+  uiRefresh();
   document.getElementById('impPreview').style.display='none';
   document.getElementById('impFile').value='';
   impData=null;
   const btn=document.getElementById('impBtn');btn.disabled=true;btn.style.opacity='.5';
   tst(mode==='replace'?`${DB.length} pacientes importadas ✓`:`${count} pacientes nuevas añadidas ✓`,'ok');
 }
-function clearAll(){
+async function clearAll(){
   if(!confirm(`¿Borrar TODAS las ${DB.length} pacientes? Esta acción es irreversible.`))return;
-  DB=[];sv();const sec=document.getElementById('s-pacientes');if(sec.classList.contains('on'))rPL();dRec();tst('Base de datos borrada','er');
+  DB=[];
+  try{await idb.clearStore();}catch(e){console.error('IDB clear error:',e);}
+  uiRefresh();
+  const sec=document.getElementById('s-pacientes');if(sec.classList.contains('on'))rPL();
+  dRec();tst('Base de datos borrada','er');
 }
 
 // ── INIT INFORMES TAB ──
@@ -2824,28 +2961,86 @@ function initInfTab(){
 // ── REPORT COPY / DL (already bound above) ──
 
 // ═══════════════════════════════════════════════
-// INIT
+// INIT — async (IndexedDB)
 // ═══════════════════════════════════════════════
-// Ensure updExpCount exists before sv() calls it
 if(typeof updExpCount==='undefined'){window.updExpCount=function(){
   const el=document.getElementById('expCount');
   if(el)el.textContent=DB.length;
 };}
-uSt();uBdg();cEFI();cBB();uEVA();cSTEPW();uEHP();
-// Listener delegado: actualizar badges al cambiar cualquier campo del formulario
+
+// Pantalla de carga mínima mientras IDB arranca
 (()=>{
-  const fCard=document.querySelector('#s-nueva .card');
-  if(!fCard)return;
-  fCard.addEventListener('input',()=>requestAnimationFrame(uTabBadges));
-  fCard.addEventListener('change',()=>requestAnimationFrame(uTabBadges));
-  // Observar chips del formulario (clicks)
-  fCard.addEventListener('click',e=>{
-    if(e.target.classList.contains('chip'))
-      requestAnimationFrame(uTabBadges);
-  });
+  const ct=document.querySelector('.content');
+  if(ct){ct.style.opacity='0';ct.style.transition='opacity .25s';}
 })();
-// Initial chart + alerts render
-setTimeout(()=>{buildDonut&&buildDonut(DB.length,...[DB.filter(p=>p.dx==='endometriosis'||p.dx==='ambas').length,DB.filter(p=>p.dx==='miomas'||p.dx==='ambas').length,DB.filter(p=>p.dx==='ambas').length,DB.filter(p=>p.dx==='sospecha').length]);buildReviewAlerts&&buildReviewAlerts();},100);
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  try{
+    await idb.open();
+
+    // ── Migración one-shot desde localStorage ──
+    const legacy=localStorage.getItem('gapp2_pts');
+    if(legacy){
+      try{
+        const pts=JSON.parse(legacy);
+        if(Array.isArray(pts)&&pts.length){
+          await idb.putMany(pts);
+          console.log(`Migración: ${pts.length} pacientes de localStorage → IndexedDB`);
+        }
+        localStorage.removeItem('gapp2_pts');
+      }catch(e){console.warn('Error en migración one-shot:',e);}
+    }
+
+    // ── Cargar todos los registros en memoria ──
+    DB=await idb.getAll();
+    // Ordenar por updatedAt desc (más recientes primero, igual que antes)
+    DB.sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0));
+
+  }catch(err){
+    console.error('IDB no disponible, fallback a localStorage:',err);
+    // Fallback de emergencia: si IDB falla por completo (ej. modo privado Safari)
+    try{DB=JSON.parse(localStorage.getItem('gapp2_pts')||'[]');}catch(e){DB=[];}
+  }
+
+  // ── Inicializar UI ──
+  cEFI();cBB();uEVA();cSTEPW();uEHP();
+  uSt();uBdg();dRec();
+
+  // Listener delegado: badges de completitud en tiempo real
+  const fCard=document.querySelector('#s-nueva .card');
+  if(fCard){
+    fCard.addEventListener('input',()=>requestAnimationFrame(uTabBadges));
+    fCard.addEventListener('change',()=>requestAnimationFrame(uTabBadges));
+    fCard.addEventListener('click',e=>{
+      if(e.target.classList.contains('chip'))requestAnimationFrame(uTabBadges);
+    });
+  }
+
+  // Mostrar contenido con fade-in
+  const ct=document.querySelector('.content');
+  if(ct)requestAnimationFrame(()=>{ct.style.opacity='1';});
+
+  // Donut + alertas tras primer paint
+  setTimeout(()=>{
+    buildDonut&&buildDonut(
+      DB.length,
+      DB.filter(p=>p.dx==='endometriosis'||p.dx==='ambas').length,
+      DB.filter(p=>p.dx==='miomas'||p.dx==='ambas').length,
+      DB.filter(p=>p.dx==='ambas').length,
+      DB.filter(p=>p.dx==='sospecha').length
+    );
+    buildReviewAlerts&&buildReviewAlerts();
+  },120);
+
+  // Solicitar almacenamiento persistente (evita que el navegador limpie IDB)
+  if(navigator.storage&&navigator.storage.persist){
+    navigator.storage.persisted().then(already=>{
+      if(!already)navigator.storage.persist().then(granted=>{
+        if(granted)console.log('Almacenamiento persistente garantizado');
+      });
+    });
+  }
+});
 </script>
 </body>
 </html>
