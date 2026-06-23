@@ -657,6 +657,16 @@ button,a{touch-action:manipulation}
           </div>
         </div>
       </div>
+      <hr class="div">
+      <div class="box bi2 mb3"><div class="bt">💼 Esfera psico-laboral y sexual</div>Datos objetivos de impacto socio-laboral, complementarios al EHP-5/EHP-30.</div>
+      <div class="fg"><label class="fl">Edad de inicio de los síntomas (años)</label><input type="number" class="fc" id="fEdadInicio" placeholder="Ej: 16" min="0" max="80" style="max-width:160px"></div>
+      <div class="fg"><label class="fl">Problemas laborales</label>
+        <div class="chips" id="cPL"><div class="chip" onclick="ck(this)">Baja laboral</div><div class="chip" onclick="ck(this)">Despido / no renovación de contrato</div><div class="chip" onclick="ck(this)">Pérdida económica por reducción o adaptación laboral</div></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">Afectación relaciones sexuales</label><select class="fc" id="fAfectSex"><option value="">—</option><option>No</option><option>Sí</option></select></div>
+        <div class="fg"><label class="fl">Afectación psico-familiar</label><select class="fc" id="fAfectFam"><option value="">—</option><option>No</option><option>Sí</option></select></div>
+      </div>
     </div>
     <div id="ft2" style="display:none">
       <div class="fr2">
@@ -666,15 +676,27 @@ button,a{touch-action:manipulation}
       <div id="endoF" style="display:none">
         <hr class="div"><div class="f6 cp mb3 sm">🔬 Endometriosis</div>
         <div class="fr2">
-          <div class="fg"><label class="fl">Estadio rASRM</label><select class="fc" id="fAS"><option value="">—</option><option value="I">I – Mínima</option><option value="II">II – Leve</option><option value="III">III – Moderada</option><option value="IV">IV – Severa</option></select></div>
+          <div class="fg">
+            <label class="fl">Estadio rASRM</label>
+            <div class="flex g1">
+              <select class="fc" id="fAS" style="flex:1"><option value="">—</option><option value="I">I – Mínima</option><option value="II">II – Leve</option><option value="III">III – Moderada</option><option value="IV">IV – Severa</option></select>
+              <button type="button" class="btn bs bic" onclick="openASRMCalc()" title="Calculadora rASRM detallada">🧮</button>
+            </div>
+            <div class="fh" id="fASPtsHint" style="display:none">Puntos rASRM: <strong id="fASPtsVal">0</strong> — calculado con la calculadora detallada</div>
+          </div>
           <div class="fg"><label class="fl">Método diagnóstico</label><select class="fc" id="fMD"><option value="">—</option><option>Ecografía TV</option><option>RM pélvica</option><option>Laparoscopía + histología</option><option>Diagnóstico empírico</option></select></div>
         </div>
         <div class="fg"><label class="fl">Localización lesiones</label>
           <div class="chips" id="cLE"><div class="chip" onclick="ck(this)">Peritoneal superficial</div><div class="chip" onclick="ck(this)">Endometrioma ovárico</div><div class="chip" onclick="ck(this)">Endometriosis profunda</div><div class="chip" onclick="ck(this)">Tabique rectovaginal</div><div class="chip" onclick="ck(this)">Ligamentos uterosacros</div><div class="chip" onclick="ck(this)">Intestinal</div><div class="chip" onclick="ck(this)">Vesical</div><div class="chip" onclick="ck(this)">Ureteral</div><div class="chip" onclick="ck(this)">Diafragmática</div><div class="chip" onclick="ck(this)">Pared abdominal</div></div>
         </div>
-        <div class="fr2">
-          <div class="fg"><label class="fl">Endometrioma (mm)</label><input type="number" class="fc" id="fTE" placeholder="mm"></div>
+        <div class="fr3">
+          <div class="fg"><label class="fl">N.º endometriomas</label><input type="number" class="fc" id="fNE" placeholder="0" min="0"></div>
+          <div class="fg"><label class="fl">Endometrioma mayor (mm)</label><input type="number" class="fc" id="fTE" placeholder="mm"></div>
           <div class="fg"><label class="fl">Adenomiosis</label><select class="fc" id="fAd"><option value="">—</option><option>No</option><option>Focal</option><option>Difusa</option><option>Sospecha</option></select></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label class="fl">Recurrencia</label><select class="fc" id="fRec" onchange="document.getElementById('fRecLocWrap').style.display=this.value==='Sí'?'block':'none'"><option value="">—</option><option>No</option><option>Sí</option></select></div>
+          <div class="fg" id="fRecLocWrap" style="display:none"><label class="fl">Localización recurrencia</label><input class="fc" id="fRecLoc" placeholder="Ej: pared abdominal, ovario izquierdo…"></div>
         </div>
       </div>
       <div id="miomaF" style="display:none">
@@ -704,11 +726,35 @@ button,a{touch-action:manipulation}
         <div class="chips" id="cTM"><div class="chip" onclick="ck(this)">ACO combinados</div><div class="chip" onclick="ck(this)">Progestágenos (oral)</div><div class="chip" onclick="ck(this)">DIU-LNG</div><div class="chip" onclick="ck(this)">Implante etonogestrel</div><div class="chip" onclick="ck(this)">Agonistas GnRH</div><div class="chip" onclick="ck(this)">Relugolix (antagonista)</div><div class="chip" onclick="ck(this)">Linzagolix (antagonista)</div><div class="chip" onclick="ck(this)">Inhibidores aromatasa</div><div class="chip" onclick="ck(this)">AINEs</div><div class="chip" onclick="ck(this)">Ácido tranexámico</div><div class="chip" onclick="ck(this)">Dienogest</div><div class="chip" onclick="ck(this)">Vitamina D</div></div>
       </div>
       <div class="fg"><label class="fl">Intervenciones quirúrgicas</label>
-        <div class="chips" id="cTQ"><div class="chip" onclick="ck(this)">Laparoscopía diagnóstica</div><div class="chip" onclick="ck(this)">Escisión endometriosis</div><div class="chip" onclick="ck(this)">Ablación endometriosis</div><div class="chip" onclick="ck(this)">Quistectomía ovárica</div><div class="chip" onclick="ck(this)">Miomectomía histeroscópica</div><div class="chip" onclick="ck(this)">Miomectomía laparoscópica</div><div class="chip" onclick="ck(this)">Miomectomía laparotómica</div><div class="chip" onclick="ck(this)">HIFU / Radiofrecuencia</div><div class="chip" onclick="ck(this)">Embolización (EAU)</div><div class="chip" onclick="ck(this)">Histerectomía</div><div class="chip" onclick="ck(this)">Resección intestinal</div></div>
+        <div class="chips" id="cTQ"><div class="chip" onclick="ck(this)">Laparoscopía diagnóstica</div><div class="chip" onclick="ck(this)">Escisión endometriosis</div><div class="chip" onclick="ck(this)">Ablación endometriosis</div><div class="chip" onclick="ck(this)">Quistectomía ovárica</div><div class="chip" onclick="ck(this)">Ooforectomía</div><div class="chip" onclick="ck(this)">Shaving rectal</div><div class="chip" onclick="ck(this)">Resección discoide</div><div class="chip" onclick="ck(this)">Miomectomía histeroscópica</div><div class="chip" onclick="ck(this)">Miomectomía laparoscópica</div><div class="chip" onclick="ck(this)">Miomectomía laparotómica</div><div class="chip" onclick="ck(this)">HIFU / Radiofrecuencia</div><div class="chip" onclick="ck(this)">Embolización (EAU)</div><div class="chip" onclick="ck(this)">Histerectomía</div><div class="chip" onclick="ck(this)">Resección intestinal</div></div>
+      </div>
+      <div class="fr2">
+        <div class="fg">
+          <label class="fl">Cirugía intestinal</label>
+          <select class="fc" id="fCirIntest" onchange="document.getElementById('fCirIntestTxtWrap').style.display=this.value==='Sí'?'block':'none'"><option value="">—</option><option>No</option><option>Sí</option></select>
+        </div>
+        <div class="fg" id="fCirIntestTxtWrap" style="display:none">
+          <label class="fl">Tipo cirugía intestinal</label>
+          <input class="fc" id="fCirIntestTxt" placeholder="Ej: resección segmentaria, shaving…">
+        </div>
+      </div>
+      <div class="fr2">
+        <div class="fg">
+          <label class="fl">Cirugía urinaria</label>
+          <select class="fc" id="fCirUrin" onchange="document.getElementById('fCirUrinTxtWrap').style.display=this.value==='Sí'?'block':'none'"><option value="">—</option><option>No</option><option>Sí</option></select>
+        </div>
+        <div class="fg" id="fCirUrinTxtWrap" style="display:none">
+          <label class="fl">Tipo cirugía urinaria</label>
+          <input class="fc" id="fCirUrinTxt" placeholder="Ej: resección vesical, reimplante ureteral…">
+        </div>
       </div>
       <div class="fr2">
         <div class="fg"><label class="fl">Respuesta al tratamiento</label><select class="fc" id="fRT"><option value="">—</option><option>Excelente (EVA 0–2)</option><option>Buena (EVA 3–4)</option><option>Parcial (EVA 5–6)</option><option>Escasa (EVA 7–8)</option><option>Refractaria (EVA 9–10)</option></select></div>
         <div class="fg"><label class="fl">Próxima revisión</label><input type="date" class="fc" id="fPR"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">Respuesta postquirúrgica</label><select class="fc" id="fRTQx"><option value="">—</option><option>Completa</option><option>Parcialmente</option><option>No consigue</option></select></div>
+        <div class="fg"><label class="fl">Embarazo (si deseo gestacional)</label><select class="fc" id="fEmb"><option value="">—</option><option>Consigue</option><option>No consigue</option></select></div>
       </div>
       <div class="fg"><label class="fl">Plan terapéutico</label><textarea class="fc" id="fPTx" placeholder="Objetivos, cambios de medicación…"></textarea></div>
       <hr class="div">
@@ -1865,11 +1911,15 @@ function udF(){
 function clr(){
   eId=null;
   document.getElementById('fHT').textContent='Nueva paciente';
-  ['fN','fNHC','fTel','fIMC','fMen','fPar','fTI','fCF','fNDx','fNF','fPTx','fObs','fTE','fTM','fVU','fHb','fAMH','fEFI'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['fN','fNHC','fTel','fIMC','fMen','fPar','fTI','fCF','fNDx','fNF','fPTx','fObs','fTE','fTM','fVU','fHb','fAMH','fEFI','fEdadInicio','fNE','fRecLoc','fCirIntestTxt','fCirUrinTxt'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   ['fFN','fFDx','fPR'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  ['fEC','fAnt','fDG','fDx','fAS','fMD','fAd','fFG','fNM','fDC','fET','fRT','fDur','fDem','fFM','fPT','fTRA'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
-  ['cAF','cSx','cLE','cSM','cTM','cTQ','cMC'].forEach(id=>document.querySelectorAll('#'+id+' .chip').forEach(c=>c.classList.remove('on')));
+  ['fEC','fAnt','fDG','fDx','fAS','fMD','fAd','fFG','fNM','fDC','fET','fRT','fDur','fDem','fFM','fPT','fTRA','fRec','fCirIntest','fCirUrin','fRTQx','fEmb','fAfectSex','fAfectFam'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
+  ['cAF','cSx','cLE','cSM','cTM','cTQ','cMC','cPL'].forEach(id=>document.querySelectorAll('#'+id+' .chip').forEach(c=>c.classList.remove('on')));
   const mcTxt=document.getElementById('fMCTxt');if(mcTxt)mcTxt.value='';hideAlert('mcAlertBox');
+  document.getElementById('fRecLocWrap').style.display='none';
+  document.getElementById('fCirIntestTxtWrap').style.display='none';
+  document.getElementById('fCirUrinTxtWrap').style.display='none';
+  const asrmHint=document.getElementById('fASPtsHint');if(asrmHint)asrmHint.style.display='none';
   document.getElementById('eDr').value=0;document.getElementById('eDv').textContent=0;
   document.getElementById('ePr').value=0;document.getElementById('ePv').textContent=0;
   [1,2,3,4,5].forEach(i=>{
@@ -1907,16 +1957,24 @@ function gD(){
     ehp5:document.getElementById('ehp5').value,
     ehpMode:_ehp30Active?'30':'5',
     ehp30:(()=>{const v={};for(let i=1;i<=30;i++){const el=document.getElementById('e30_'+i);v['e'+i]=el?parseInt(el.value)||0:0;}return v;})(),
+    edadInicioSint:document.getElementById('fEdadInicio').value,
+    probLaboral:gC('cPL'),
+    afectSexual:document.getElementById('fAfectSex').value,
+    afectFamiliar:document.getElementById('fAfectFam').value,
     duracion:document.getElementById('fDur').value,
     demora:document.getElementById('fDem').value,
     obsSint:document.getElementById('fObs').value,
     dx:document.getElementById('fDx').value,
     fechaDx:document.getElementById('fFDx').value,
     asrm:document.getElementById('fAS').value,
+    asrmPts:document.getElementById('fASPtsVal')?document.getElementById('fASPtsVal').textContent:'',
     metodoDx:document.getElementById('fMD').value,
     locEndo:gC('cLE'),
+    numEndometriomas:document.getElementById('fNE').value,
     tamEndo:document.getElementById('fTE').value,
     adenomiosis:document.getElementById('fAd').value,
+    recurrencia:document.getElementById('fRec').value,
+    recurrenciaLoc:document.getElementById('fRecLoc').value,
     figo:document.getElementById('fFG').value,
     numMiomas:document.getElementById('fNM').value,
     tamMioma:document.getElementById('fTM').value,
@@ -1928,9 +1986,15 @@ function gD(){
     notesDx:document.getElementById('fNDx').value,
     estadoTx:document.getElementById('fET').value,
     txMed:gC('cTM'),txQx:gC('cTQ'),
+    cirIntest:document.getElementById('fCirIntest').value,
+    cirIntestTxt:document.getElementById('fCirIntestTxt').value,
+    cirUrin:document.getElementById('fCirUrin').value,
+    cirUrinTxt:document.getElementById('fCirUrinTxt').value,
     medConc:gC('cMC'),
     medConcTxt:document.getElementById('fMCTxt').value.trim(),
     respTx:document.getElementById('fRT').value,
+    respPostQx:document.getElementById('fRTQx').value,
+    embarazoLogrado:document.getElementById('fEmb').value,
     proxRev:document.getElementById('fPR').value,
     planTx:document.getElementById('fPTx').value,
     tiempoInf:document.getElementById('fTI').value,
@@ -1977,19 +2041,40 @@ function fillF(p){
     if(_ehp30Active)toggleEHP30();
   }
   s('fDur',p.duracion);s('fDem',p.demora);s('fObs',p.obsSint);
+  s('fEdadInicio',p.edadInicioSint);
+  sC('cPL',p.probLaboral||[]);
+  s('fAfectSex',p.afectSexual);s('fAfectFam',p.afectFamiliar);
   s('fDx',p.dx);udF();s('fFDx',p.fechaDx);
   s('fAS',p.asrm);s('fMD',p.metodoDx);
+  if(p.asrmPts){
+    const hint=document.getElementById('fASPtsHint'),val=document.getElementById('fASPtsVal');
+    if(hint&&val){val.textContent=p.asrmPts;hint.style.display='block';}
+  } else {
+    const hint=document.getElementById('fASPtsHint');
+    if(hint)hint.style.display='none';
+  }
   sC('cLE',p.locEndo);
+  s('fNE',p.numEndometriomas);
   s('fTE',p.tamEndo);s('fAd',p.adenomiosis);
+  s('fRec',p.recurrencia);
+  document.getElementById('fRecLocWrap').style.display=p.recurrencia==='Sí'?'block':'none';
+  s('fRecLoc',p.recurrenciaLoc);
   s('fFG',p.figo);s('fNM',p.numMiomas||'1');s('fTM',p.tamMioma);s('fVU',p.volUt);s('fDC',p.distorsion||'No');
   sC('cSM',p.sintMioma);
   s('fHb',p.hgb);s('fAMH',p.amh);s('fNDx',p.notesDx);
   s('fET',p.estadoTx||'ninguno');
   sC('cTM',p.txMed);sC('cTQ',p.txQx);
+  s('fCirIntest',p.cirIntest);
+  document.getElementById('fCirIntestTxtWrap').style.display=p.cirIntest==='Sí'?'block':'none';
+  s('fCirIntestTxt',p.cirIntestTxt);
+  s('fCirUrin',p.cirUrin);
+  document.getElementById('fCirUrinTxtWrap').style.display=p.cirUrin==='Sí'?'block':'none';
+  s('fCirUrinTxt',p.cirUrinTxt);
   sC('cMC',p.medConc||[]);
   s('fMCTxt',p.medConcTxt||'');
   setTimeout(()=>checkMedInteractions(gC('cTM'),gC('cMC')),0);
   s('fRT',p.respTx);s('fPR',p.proxRev);s('fPTx',p.planTx);
+  s('fRTQx',p.respPostQx);s('fEmb',p.embarazoLogrado);
   s('fTI',p.tiempoInf);s('fEFI',p.efi);s('fFM',p.factorMasc);s('fPT',p.permTub);s('fTRA',p.tra||'ninguna');
   s('fCF',p.ciclosFIV);s('fNF',p.notesFert);
   fTab(0,null);
@@ -2359,9 +2444,9 @@ function bCard(p){
   ${p.dx==='endometriosis'||p.dx==='ambas'?`
     <div style="border-left:3px solid var(--pk);padding-left:10px;margin-bottom:12px">
       <div class="xs f6 cp mb1" style="text-transform:uppercase;letter-spacing:.8px">Endometriosis</div>
-      <div class="sm">${p.asrm?`<span class="tag tp">Estadio ${p.asrm}</span> `:''} ${p.metodoDx?'<span class="tag tgr">'+p.metodoDx+'</span>':''}</div>
+      <div class="sm">${p.asrm?`<span class="tag tp">Estadio ${p.asrm}${p.asrmPts?' ('+p.asrmPts+' pts)':''}</span> `:''} ${p.metodoDx?'<span class="tag tgr">'+p.metodoDx+'</span>':''}</div>
       ${p.locEndo&&p.locEndo.length?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:5px">${p.locEndo.map(l=>`<span class="tag tp">${l}</span>`).join('')}</div>`:''}
-      ${p.tamEndo?`<div class="xs c2 mt2u">Endometrioma: ${p.tamEndo}mm</div>`:''}
+      ${p.tamEndo?`<div class="xs c2 mt2u">Endometrioma${p.numEndometriomas&&parseInt(p.numEndometriomas)>1?'s ('+p.numEndometriomas+')':''}: ${p.tamEndo}mm mayor</div>`:''}
       ${p.adenomiosis&&p.adenomiosis!=='No'?`<div class="xs c2">Adenomiosis: ${p.adenomiosis}</div>`:''}
     </div>`:''}
   ${p.dx==='miomas'||p.dx==='ambas'?`
@@ -2381,7 +2466,10 @@ function bCard(p){
     <div class="mb3">
       <div class="xs c3 f6 mb2" style="text-transform:uppercase;letter-spacing:.8px">Intervenciones quirúrgicas</div>
       <div style="display:flex;flex-wrap:wrap;gap:3px">${p.txQx.map(t=>`<span class="tag to">${t}</span>`).join('')}</div>
+      ${p.cirIntest==='Sí'?`<div class="xs c2 mt2u">🔪 Cirugía intestinal${p.cirIntestTxt?': '+p.cirIntestTxt:''}</div>`:''}
+      ${p.cirUrin==='Sí'?`<div class="xs c2 mt2u">🔪 Cirugía urinaria${p.cirUrinTxt?': '+p.cirUrinTxt:''}</div>`:''}
     </div>`:''}
+  ${p.recurrencia==='Sí'?`<div class="box br mb3"><div class="bt">🔁 Recurrencia</div><div class="sm">${p.recurrenciaLoc?'Localización: '+p.recurrenciaLoc:'Sin localización especificada'}</div></div>`:''}
   ${(()=>{
     const mc=p.medConc||[];const txt=p.medConcTxt||'';
     if(!mc.length&&!txt)return'';
@@ -3700,6 +3788,201 @@ function dRec(){
 }
 
 // ═══════════════════════════════════════════════
+// CALCULADORA rASRM DETALLADA (Revised American Society
+// for Reproductive Medicine classification, 1996)
+// ═══════════════════════════════════════════════
+
+// Tabla oficial de puntos por tamaño de lesión (<1cm / 1-3cm / >3cm)
+const ASRM_PERIT = {superf:[1,2,4], prof:[2,4,6]};
+const ASRM_OVARIO = {superf:[1,2,4], prof:[4,16,20]};
+// Obliteración fondo de saco posterior
+const ASRM_OBLIT = {parcial:4, total:40};
+// Adherencias ováricas/tubáricas — puntos según extensión envuelta (<1/3, 1/3-2/3, >2/3)
+const ASRM_ADH_OV_TENUE=[1,2,4], ASRM_ADH_OV_DENSA=[4,8,16];
+const ASRM_ADH_TUB_TENUE=[1,2,4], ASRM_ADH_TUB_DENSA=[4,8,16];
+// Si trompa completamente envuelta en adherencia densa → puntuación fija máxima (16) por compartimento
+
+let _asrm={
+  peritSup:0, peritProf:0,
+  ovDsup:0, ovDprof:0, ovIsup:0, ovIprof:0,
+  oblit:'', // '', 'parcial', 'total'
+  ovDadhT:0, ovDadhD:0, ovIadhT:0, ovIadhD:0,
+  tubDfimb:false, tubDadhT:0, tubDadhD:0,
+  tubIfimb:false, tubIadhT:0, tubIadhD:0
+};
+
+function openASRMCalc(){
+  let existing=document.getElementById('asrmModal');
+  if(existing)existing.remove();
+
+  const sizeChips=(grp,key)=>`
+    <div class="chips" id="asrm_${grp}" style="display:inline-flex">
+      <div class="chip" onclick="asrmSizeSel('${grp}','${key}',0,this)">—</div>
+      <div class="chip" onclick="asrmSizeSel('${grp}','${key}',1,this)">&lt;1cm</div>
+      <div class="chip" onclick="asrmSizeSel('${grp}','${key}',2,this)">1–3cm</div>
+      <div class="chip" onclick="asrmSizeSel('${grp}','${key}',3,this)">&gt;3cm</div>
+    </div>`;
+
+  const extChips=(grp,key)=>`
+    <div class="chips" id="asrm_${grp}" style="display:inline-flex">
+      <div class="chip" onclick="asrmSizeSel('${grp}','${key}',0,this)">—</div>
+      <div class="chip" onclick="asrmSizeSel('${grp}','${key}',1,this)">&lt;1/3</div>
+      <div class="chip" onclick="asrmSizeSel('${grp}','${key}',2,this)">1/3–2/3</div>
+      <div class="chip" onclick="asrmSizeSel('${grp}','${key}',3,this)">&gt;2/3</div>
+    </div>`;
+
+  const m=document.createElement('div');
+  m.id='asrmModal';
+  m.style.cssText='position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:14px';
+  m.innerHTML=`
+    <div style="background:var(--card);border:1px solid var(--border2);border-radius:var(--r);max-width:600px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow)">
+      <div style="padding:13px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card);z-index:5;display:flex;align-items:center;justify-content:space-between">
+        <div style="font-weight:700;font-size:14px;color:var(--pk)">🧮 Calculadora rASRM detallada</div>
+        <button class="btn bic bg" onclick="document.getElementById('asrmModal').remove()">✕</button>
+      </div>
+      <div style="padding:16px 18px">
+        <div class="box bi2 mb3" style="font-size:11.5px">Clasificación rASRM 1996. Selecciona los hallazgos quirúrgicos/ecográficos. El estadio se calcula automáticamente según la puntuación total.</div>
+
+        <div class="f6 sm mb2" style="color:var(--pk)">PERITONEO</div>
+        <div class="fr2 mb3">
+          <div class="fg" style="margin-bottom:0"><label class="fl">Superficial</label>${sizeChips('peritSup','perit_superf')}</div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Profundo</label>${sizeChips('peritProf','perit_prof')}</div>
+        </div>
+
+        <div class="f6 sm mb2" style="color:var(--pk)">OVARIO</div>
+        <div class="fr2 mb2">
+          <div class="fg" style="margin-bottom:0"><label class="fl">Derecho — superficial</label>${sizeChips('ovDsup','ov_superf')}</div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Derecho — profundo</label>${sizeChips('ovDprof','ov_prof')}</div>
+        </div>
+        <div class="fr2 mb3">
+          <div class="fg" style="margin-bottom:0"><label class="fl">Izquierdo — superficial</label>${sizeChips('ovIsup','ov_superf')}</div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Izquierdo — profundo</label>${sizeChips('ovIprof','ov_prof')}</div>
+        </div>
+
+        <div class="f6 sm mb2" style="color:var(--pk)">OBLITERACIÓN FONDO DE SACO POSTERIOR</div>
+        <div class="chips mb3" id="asrm_oblit">
+          <div class="chip" onclick="asrmOblitSel('',this)">No</div>
+          <div class="chip" onclick="asrmOblitSel('parcial',this)">Parcial (4 pts)</div>
+          <div class="chip" onclick="asrmOblitSel('total',this)">Total (40 pts)</div>
+        </div>
+
+        <div class="f6 sm mb2" style="color:var(--pk)">ADHERENCIAS OVÁRICAS</div>
+        <div class="fr2 mb2">
+          <div class="fg" style="margin-bottom:0"><label class="fl">Derecho — tenues</label>${extChips('ovDadhT','ov_adhT')}</div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Derecho — densas</label>${extChips('ovDadhD','ov_adhD')}</div>
+        </div>
+        <div class="fr2 mb3">
+          <div class="fg" style="margin-bottom:0"><label class="fl">Izquierdo — tenues</label>${extChips('ovIadhT','ov_adhT')}</div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Izquierdo — densas</label>${extChips('ovIadhD','ov_adhD')}</div>
+        </div>
+
+        <div class="f6 sm mb2" style="color:var(--pk)">ADHERENCIAS TUBÁRICAS</div>
+        <div class="fr2 mb2">
+          <div class="fg" style="margin-bottom:0">
+            <label class="fl">Extremo fimbriado D completamente comprometido</label>
+            <select class="fc" id="asrm_tubDfimb" onchange="asrmTubFimb('D',this.value)"><option value="No">No</option><option value="Sí">Sí (16 pts fijos)</option></select>
+          </div>
+          <div class="fg" style="margin-bottom:0">
+            <label class="fl">Extremo fimbriado I completamente comprometido</label>
+            <select class="fc" id="asrm_tubIfimb" onchange="asrmTubFimb('I',this.value)"><option value="No">No</option><option value="Sí">Sí (16 pts fijos)</option></select>
+          </div>
+        </div>
+        <div class="fr2 mb2" id="asrm_tubDwrap">
+          <div class="fg" style="margin-bottom:0"><label class="fl">Trompa D — tenues</label>${extChips('tubDadhT','tub_adhT')}</div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Trompa D — densas</label>${extChips('tubDadhD','tub_adhD')}</div>
+        </div>
+        <div class="fr2 mb3" id="asrm_tubIwrap">
+          <div class="fg" style="margin-bottom:0"><label class="fl">Trompa I — tenues</label>${extChips('tubIadhT','tub_adhT')}</div>
+          <div class="fg" style="margin-bottom:0"><label class="fl">Trompa I — densas</label>${extChips('tubIadhD','tub_adhD')}</div>
+        </div>
+
+        <div class="card" style="background:var(--bg3);padding:13px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+          <div class="scr" id="asrmR" style="border-color:var(--gr);width:64px;height:64px"><div class="sn" id="asrmN" style="font-size:18px;color:var(--gr)">0</div><div class="sl2">pts</div></div>
+          <div style="flex:1;min-width:140px">
+            <div id="asrmStgLbl" class="f6 sm" style="color:var(--gr)">Sin datos</div>
+            <div id="asrmStgSub" class="xs c2">Introduce los hallazgos para calcular</div>
+          </div>
+          <button class="btn bp bsm" onclick="applyASRMResult()">Aplicar al formulario</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+}
+
+function asrmSizeSel(grp,key,val,el){
+  document.querySelectorAll('#asrm_'+grp+' .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  _asrm[grp]=val;
+  cASRM();
+}
+
+function asrmOblitSel(val,el){
+  document.querySelectorAll('#asrm_oblit .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  _asrm.oblit=val;
+  cASRM();
+}
+
+function asrmTubFimb(side,val){
+  const fimb=val==='Sí';
+  if(side==='D'){_asrm.tubDfimb=fimb;document.getElementById('asrm_tubDwrap').style.display=fimb?'none':'flex';}
+  else{_asrm.tubIfimb=fimb;document.getElementById('asrm_tubIwrap').style.display=fimb?'none':'flex';}
+  cASRM();
+}
+
+function cASRM(){
+  // Peritoneo
+  const periSup=_asrm.peritSup?ASRM_PERIT.superf[_asrm.peritSup-1]:0;
+  const periProf=_asrm.peritProf?ASRM_PERIT.prof[_asrm.peritProf-1]:0;
+  // Ovario — el mayor valor entre superficial/profundo por lado se queda, según convención rASRM se suman ambos si coexisten
+  const ovDsup=_asrm.ovDsup?ASRM_OVARIO.superf[_asrm.ovDsup-1]:0;
+  const ovDprof=_asrm.ovDprof?ASRM_OVARIO.prof[_asrm.ovDprof-1]:0;
+  const ovIsup=_asrm.ovIsup?ASRM_OVARIO.superf[_asrm.ovIsup-1]:0;
+  const ovIprof=_asrm.ovIprof?ASRM_OVARIO.prof[_asrm.ovIprof-1]:0;
+  // Obliteración
+  const oblitPts=_asrm.oblit==='parcial'?ASRM_OBLIT.parcial:_asrm.oblit==='total'?ASRM_OBLIT.total:0;
+  // Adherencias ováricas
+  const ovDadhT=_asrm.ovDadhT?ASRM_ADH_OV_TENUE[_asrm.ovDadhT-1]:0;
+  const ovDadhD=_asrm.ovDadhD?ASRM_ADH_OV_DENSA[_asrm.ovDadhD-1]:0;
+  const ovIadhT=_asrm.ovIadhT?ASRM_ADH_OV_TENUE[_asrm.ovIadhT-1]:0;
+  const ovIadhD=_asrm.ovIadhD?ASRM_ADH_OV_DENSA[_asrm.ovIadhD-1]:0;
+  // Adherencias tubáricas (16 pts fijos si extremo fimbriado comprometido)
+  const tubDpts=_asrm.tubDfimb?16:(( _asrm.tubDadhT?ASRM_ADH_TUB_TENUE[_asrm.tubDadhT-1]:0)+(_asrm.tubDadhD?ASRM_ADH_TUB_DENSA[_asrm.tubDadhD-1]:0));
+  const tubIpts=_asrm.tubIfimb?16:(( _asrm.tubIadhT?ASRM_ADH_TUB_TENUE[_asrm.tubIadhT-1]:0)+(_asrm.tubIadhD?ASRM_ADH_TUB_DENSA[_asrm.tubIadhD-1]:0));
+
+  const total=periSup+periProf+ovDsup+ovDprof+ovIsup+ovIprof+oblitPts+
+    ovDadhT+ovDadhD+ovIadhT+ovIadhD+tubDpts+tubIpts;
+
+  // Estadio según puntuación oficial rASRM
+  let stage,col,desc;
+  if(total<=5){stage='I';col='var(--gr)';desc='Mínima (1–5 pts)';}
+  else if(total<=15){stage='II';col='var(--or)';desc='Leve (6–15 pts)';}
+  else if(total<=40){stage='III';col='var(--pk)';desc='Moderada (16–40 pts)';}
+  else{stage='IV';col='var(--rd)';desc='Severa (>40 pts)';}
+
+  const ring=document.getElementById('asrmR'),num=document.getElementById('asrmN');
+  const lbl=document.getElementById('asrmStgLbl'),sub=document.getElementById('asrmStgSub');
+  if(ring){
+    num.textContent=total;
+    ring.style.borderColor=col;num.style.color=col;
+    lbl.style.color=col;lbl.textContent='Estadio '+stage;
+    sub.textContent=desc;
+  }
+  return{total,stage};
+}
+
+function applyASRMResult(){
+  const{total,stage}=cASRM();
+  document.getElementById('fAS').value=stage;
+  document.getElementById('fASPtsVal').textContent=total;
+  document.getElementById('fASPtsHint').style.display='block';
+  // Autocompletar número de endometriomas si hay datos ováricos profundos relevantes
+  document.getElementById('asrmModal').remove();
+  setTimeout(uTabBadges,0);
+  tst('Estadio '+stage+' aplicado ('+total+' puntos) ✓','ok');
+}
+
+// ═══════════════════════════════════════════════
 // EFI CALCULATOR
 // ═══════════════════════════════════════════════
 function cEFI(){
@@ -4047,14 +4330,14 @@ function bRpt(p,type){
       }
     }
     body+=`<div class="rs"><h3>2. Síntomas y Calidad de Vida</h3>${row('Síntomas',(p.sintomas||[]).join(', '))}${row('EVA dismenorrea',(p.evaD||0)+'/10')}${row('EVA dolor pélvico',(p.evaP||0)+'/10')}${row('Duración síntomas',p.duracion)}${row('Demora diagnóstica',p.demora)}${ehpRowsR}</div>`;
-    body+=`<div class="rs"><h3>3. Diagnóstico</h3>${row('Patología',dxL[p.dx]||'—')}${row('Fecha diagnóstico',p.fechaDx?new Date(p.fechaDx).toLocaleDateString('es'):'—')}${row('Método',p.metodoDx)}${(p.dx==='endometriosis'||p.dx==='ambas')?row('Estadio rASRM',p.asrm?'Estadio '+p.asrm:'—')+row('Localización',(p.locEndo||[]).join(', '))+row('Adenomiosis',p.adenomiosis):''}${(p.dx==='miomas'||p.dx==='ambas')?row('Tipo FIGO','Tipo '+(p.figo||'?'))+row('N.º miomas',p.numMiomas)+row('Tamaño mayor',p.tamMioma?p.tamMioma+' mm':'—')+row('Hgb',p.hgb?p.hgb+' g/dL':'—')+row('AMH',p.amh?p.amh+' ng/mL':'—'):''}${row('Notas',p.notesDx)}</div>`;
+    body+=`<div class="rs"><h3>3. Diagnóstico</h3>${row('Patología',dxL[p.dx]||'—')}${row('Fecha diagnóstico',p.fechaDx?new Date(p.fechaDx).toLocaleDateString('es'):'—')}${row('Edad inicio síntomas',p.edadInicioSint?p.edadInicioSint+' años':'—')}${row('Método',p.metodoDx)}${(p.dx==='endometriosis'||p.dx==='ambas')?row('Estadio rASRM',p.asrm?'Estadio '+p.asrm+(p.asrmPts?' ('+p.asrmPts+' pts)':''):'—')+row('Localización',(p.locEndo||[]).join(', '))+row('N.º endometriomas',p.numEndometriomas||'—')+row('Adenomiosis',p.adenomiosis)+row('Recurrencia',p.recurrencia==='Sí'?'Sí'+(p.recurrenciaLoc?' — '+p.recurrenciaLoc:''):p.recurrencia||'—'):''}${(p.dx==='miomas'||p.dx==='ambas')?row('Tipo FIGO','Tipo '+(p.figo||'?'))+row('N.º miomas',p.numMiomas)+row('Tamaño mayor',p.tamMioma?p.tamMioma+' mm':'—')+row('Hgb',p.hgb?p.hgb+' g/dL':'—')+row('AMH',p.amh?p.amh+' ng/mL':'—'):''}${row('Notas',p.notesDx)}</div>`;
   }
   if(type==='clinico'||type==='tx'){
     const mcRpt2=(p.medConc||[]).join(', ')+(p.medConcTxt?((p.medConc||[]).length?'; ':'')+p.medConcTxt:'');
     const usaGnRH2=(p.txMed||[]).some(t=>GNRH_ANT.includes(t));
     const warnsMC2=usaGnRH2?(p.medConc||[]).filter(m=>MC_INTERACTIONS[m]):[];
     const interRpt2=warnsMC2.length?'⚠ Interacciones potenciales con antagonistas GnRH: '+warnsMC2.map(m=>m+' (nivel '+MC_INTERACTIONS[m].nivel+')').join(', '):'';
-    body+=`<div class="rs"><h3>${type==='tx'?'1':'4'}. Tratamiento</h3>${row('Estado',p.estadoTx)}${row('Tratamiento médico',(p.txMed||[]).join(', '))}${row('Cirugías',(p.txQx||[]).join(', '))}${row('Respuesta',p.respTx)}${row('Próxima revisión',p.proxRev?new Date(p.proxRev).toLocaleDateString('es'):'—')}${mcRpt2?row('Medicación concomitante',mcRpt2):''}${interRpt2?`<div style="margin-top:5px;padding:6px 9px;background:rgba(232,152,48,.1);border:1px solid rgba(232,152,48,.3);border-radius:6px;font-size:12px;color:var(--or)">${interRpt2}</div>`:''}${p.planTx?`<div style="margin-top:8px;padding:10px;background:var(--bg3);border-radius:6px;font-size:12.5px"><strong>Plan:</strong> ${p.planTx}</div>`:''}</div>`;
+    body+=`<div class="rs"><h3>${type==='tx'?'1':'4'}. Tratamiento</h3>${row('Estado',p.estadoTx)}${row('Tratamiento médico',(p.txMed||[]).join(', '))}${row('Cirugías',(p.txQx||[]).join(', '))}${p.cirIntest==='Sí'?row('Cirugía intestinal',p.cirIntestTxt||'Sí'):''}${p.cirUrin==='Sí'?row('Cirugía urinaria',p.cirUrinTxt||'Sí'):''}${row('Respuesta',p.respTx)}${p.respPostQx?row('Respuesta postquirúrgica',p.respPostQx):''}${p.embarazoLogrado?row('Embarazo',p.embarazoLogrado):''}${row('Próxima revisión',p.proxRev?new Date(p.proxRev).toLocaleDateString('es'):'—')}${mcRpt2?row('Medicación concomitante',mcRpt2):''}${interRpt2?`<div style="margin-top:5px;padding:6px 9px;background:rgba(232,152,48,.1);border:1px solid rgba(232,152,48,.3);border-radius:6px;font-size:12px;color:var(--or)">${interRpt2}</div>`:''}${p.planTx?`<div style="margin-top:8px;padding:10px;background:var(--bg3);border-radius:6px;font-size:12.5px"><strong>Plan:</strong> ${p.planTx}</div>`:''}</div>`;
   }
   if((type==='clinico'||type==='fert')&&p.deseoGestacion!=='no'){
     body+=`<div class="rs"><h3>${type==='fert'?'1':'5'}. Fertilidad</h3>${row('Deseo gestacional',p.deseoGestacion==='si'?'Inmediato':'Futuro')}${row('Tiempo infertilidad',p.tiempoInf?p.tiempoInf+' meses':'—')}${row('Factor masculino',p.factorMasc)}${row('Permeabilidad tubárica',p.permTub)}${row('EFI estimado',p.efi?p.efi+'/10':'—')}${row('TRA',p.tra)}${row('Ciclos FIV',p.ciclosFIV||'0')}${row('AMH',p.amh?p.amh+' ng/mL':'—')}</div>`;
