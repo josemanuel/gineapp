@@ -243,6 +243,10 @@ kbd{
     <a class="sna" onclick="nav('enfermeria',this)"><span class="ico">🩺</span>Valoración de enfermería</a>
     <a class="sna" onclick="nav('medconc',this)"><span class="ico">💊</span>Medicación concomitante</a>
     <a class="sna" onclick="nav('ehp30',this)"><span class="ico">📋</span>EHP-30 calidad de vida</a>
+    <a class="sna" onclick="nav('rasrm',this)"><span class="ico">🧮</span>Calculadora rASRM</a>
+    <a class="sna" onclick="nav('recurrencia',this)"><span class="ico">🔁</span>Recurrencia</a>
+    <a class="sna" onclick="nav('cirintestur',this)"><span class="ico">🔪</span>Cirugía intest./urinaria</a>
+    <a class="sna" onclick="nav('psicolaboral',this)"><span class="ico">💼</span>Esfera psico-laboral</a>
     <a class="sna" onclick="nav('vistarapida',this)"><span class="ico">👁️</span>Vista previa rápida</a>
     <a class="sna" onclick="nav('pwa',this)"><span class="ico">📲</span>Instalación PWA</a>
 
@@ -253,7 +257,7 @@ kbd{
   </nav>
   <div class="sfoot">
     <div>GinecoApp Pro v2.3</div>
-    <div style="margin-top:3px"><a href="index.html">← Volver a la aplicación</a></div>
+    <div style="margin-top:3px"><a href="gineapp.html">← Volver a la aplicación</a></div>
   </div>
 </aside>
 
@@ -263,7 +267,7 @@ kbd{
     <div class="topbar-title" id="ttl">Inicio rápido</div>
     <div style="flex:1"></div>
     <button class="tbtn" id="thbtn" onclick="toggleTheme()" title="Modo claro/oscuro">🌙</button>
-    <a class="tbtn" href="index.html" title="Volver a la app" style="margin-left:6px">← App</a>
+    <a class="tbtn" href="gineapp.html" title="Volver a la app" style="margin-left:6px">← App</a>
   </header>
 
   <div class="content">
@@ -277,7 +281,7 @@ kbd{
 
       <h2>Primeros pasos</h2>
       <div class="steps">
-        <div class="step"><div class="step-n">1</div><div class="step-body"><strong>Abrir el archivo</strong><p>Abre <code>gineapp.html</code> directamente en tu navegador (Chrome, Firefox, Safari o Edge). No necesitas instalarlo ni subirlo a ningún servidor.</p></div></div>
+        <div class="step"><div class="step-n">1</div><div class="step-body"><strong>Acceder a la aplicación</strong><p>Si accedes desde la web publicada (ej. GitHub Pages), la dirección raíz carga <code>index.html</code>, que te redirige automáticamente a <code>gineapp.html</code>. Si trabajas con los archivos en local, puedes abrir <code>gineapp.html</code> directamente en tu navegador (Chrome, Firefox, Safari o Edge) sin pasar por <code>index.html</code>. En ningún caso necesitas instalar nada ni subirlo a un servidor para empezar a usarla.</p></div></div>
         <div class="step"><div class="step-n">2</div><div class="step-body"><strong>Cargar los datos demo</strong><p>Pulsa <strong>🧪 Cargar demo</strong> en el Dashboard para ver 5 pacientes de ejemplo con casos clínicos reales. Ideal para explorar la app antes de introducir datos propios.</p></div></div>
         <div class="step"><div class="step-n">3</div><div class="step-body"><strong>Registrar tu primera paciente</strong><p>Ve a <strong>Nueva Paciente</strong> en el menú lateral o pulsa ➕ en el bottom nav (móvil). El formulario tiene 5 tabs: Datos personales, Síntomas, Diagnóstico, Tratamiento y Fertilidad.</p></div></div>
         <div class="step"><div class="step-n">4</div><div class="step-body"><strong>Explorar las herramientas clínicas</strong><p>Los algoritmos diagnósticos, las calculadoras (EFI, STEPW, EVA, BB) y las guías ESHRE/SEGO están disponibles sin necesidad de tener pacientes registradas.</p></div></div>
@@ -359,7 +363,7 @@ kbd{
       <p>Nombre completo (obligatorio), NHC, fecha de nacimiento, estado civil, teléfono, IMC, menarquia, paridad (formato G/P/A), anticoncepción actual, deseo gestacional y antecedentes familiares (chips).</p>
 
       <h2>Tab 1 — Síntomas</h2>
-      <p>Chips de síntomas ESHRE (dismenorrea, dispareunia profunda, disquecia, disuria, infertilidad, fatiga crónica, etc.), sliders de EVA dismenorrea y EVA dolor pélvico (0–10), duración de síntomas, demora diagnóstica, observaciones y <strong>EHP-5</strong> de calidad de vida.</p>
+      <p>Chips de síntomas ESHRE (dismenorrea, dispareunia profunda, disquecia, disuria, infertilidad, fatiga crónica, síntomas extragenitales catameniales, etc.), sliders de EVA dismenorrea y EVA dolor pélvico (0–10), duración de síntomas, demora diagnóstica, observaciones, calidad de vida (<strong>EHP-5</strong> o <strong>EHP-30</strong>, ver sección dedicada) y la <strong>esfera psico-laboral y sexual</strong>.</p>
 
       <h3>EHP-5 — Calidad de vida (ESHRE 2022 Rec.38)</h3>
       <p>Cinco dominios evaluados en escala 0–3 (Nunca / A veces / Frecuentemente / Siempre):</p>
@@ -376,16 +380,20 @@ kbd{
         <tr><td>8–11</td><td>Impacto severo</td></tr>
         <tr><td>12–15</td><td>Impacto muy severo — acción prioritaria</td></tr>
       </table>
+      <p>Para la evaluación completa de 30 ítems, ver <a href="#" onclick="nav('ehp30',null)">EHP-30 calidad de vida</a>.</p>
+
+      <h3>💼 Esfera psico-laboral y sexual</h3>
+      <p>Datos objetivos complementarios a los scores de calidad de vida: edad de inicio de los síntomas, problemas laborales (baja, despido/no renovación, pérdida económica por adaptación), y afectación de relaciones sexuales y psico-familiar (Sí/No). Ver detalle en <a href="#" onclick="nav('psicolaboral',null)">Esfera psico-laboral</a>.</p>
 
       <h2>Tab 2 — Diagnóstico</h2>
       <p>Diagnóstico principal (endometriosis / miomas / ambas / sospecha) y fecha. Los campos condicionales aparecen según el diagnóstico:</p>
       <ul>
-        <li><strong>Endometriosis:</strong> estadio rASRM (I–IV), método diagnóstico, localización lesiones, tamaño endometrioma, adenomiosis</li>
+        <li><strong>Endometriosis:</strong> estadio rASRM (I–IV, con <a href="#" onclick="nav('rasrm',null)">calculadora detallada</a>), método diagnóstico, localización lesiones, número y tamaño de endometriomas, adenomiosis, <a href="#" onclick="nav('recurrencia',null)">recurrencia</a></li>
         <li><strong>Miomas:</strong> tipo FIGO (0–8), número, tamaño mayor, volumen uterino, distorsión cavitaria, síntomas, Hgb, AMH</li>
       </ul>
 
       <h2>Tab 3 — Tratamiento</h2>
-      <p>Estado de tratamiento, chips de tratamiento médico (ACO, progestágenos, DIU-LNG, agonistas/antagonistas GnRH, etc.), chips de intervenciones quirúrgicas, respuesta al tratamiento, próxima revisión y plan terapéutico.</p>
+      <p>Estado de tratamiento, chips de tratamiento médico (ACO, progestágenos, DIU-LNG, agonistas/antagonistas GnRH, etc.), chips de intervenciones quirúrgicas (incluyendo ooforectomía, shaving rectal, resección discoide), <a href="#" onclick="nav('cirintestur',null)">cirugía intestinal/urinaria</a> detallada, medicación concomitante, respuesta al tratamiento, respuesta postquirúrgica, resultado de embarazo, próxima revisión y plan terapéutico.</p>
 
       <h2>Tab 4 — Fertilidad</h2>
       <p>Tiempo de búsqueda de gestación, EFI estimado (0–10), factor masculino, permeabilidad tubárica, TRA realizadas, ciclos FIV previos y notas de fertilidad.</p>
@@ -1052,6 +1060,100 @@ kbd{
       <div class="box bi"><div class="bt">💡 No cambia nada del modal actual</div>La vista previa rápida es un paso intermedio opcional. El modal completo de paciente y todas sus funciones (historial, adjuntos, notas, enfermería, guía contextual) siguen funcionando exactamente igual que antes.</div>
     </div>
 
+    <!-- CALCULADORA rASRM -->
+    <div class="section" id="s-rasrm">
+      <div class="page-title">Calculadora rASRM detallada</div>
+      <div class="page-sub">Cálculo automático del estadio de endometriosis (I–IV) a partir de los hallazgos quirúrgicos o ecográficos, según la clasificación rASRM 1996.</div>
+
+      <h2>Por qué usarla</h2>
+      <p>El campo Estadio rASRM admite selección manual directa (I–IV), pero el botón <strong>🧮</strong> junto a ese campo abre una calculadora que reproduce la <strong>tabla de puntuación oficial</strong>, evitando que el estadio dependa de una estimación subjetiva.</p>
+
+      <h2>Hallazgos que recoge</h2>
+      <table class="tbl">
+        <tr><th>Compartimento</th><th>Variable</th><th>Puntuación</th></tr>
+        <tr><td>Peritoneo</td><td>Superficial / Profundo</td><td>Según tamaño: &lt;1cm, 1–3cm, &gt;3cm</td></tr>
+        <tr><td>Ovario (D e I)</td><td>Superficial / Profundo</td><td>Según tamaño: &lt;1cm, 1–3cm, &gt;3cm</td></tr>
+        <tr><td>Fondo de saco posterior</td><td>Obliteración</td><td>Parcial: 4 pts · Total: 40 pts</td></tr>
+        <tr><td>Adherencias ováricas (D e I)</td><td>Tenues / Densas</td><td>Según extensión envuelta: &lt;1/3, 1/3–2/3, &gt;2/3</td></tr>
+        <tr><td>Adherencias tubáricas (D e I)</td><td>Tenues / Densas</td><td>Igual que ováricas, salvo regla especial</td></tr>
+      </table>
+      <div class="box bw"><div class="bt">⚠️ Regla especial — extremo fimbriado</div>Si el extremo fimbriado de la trompa está completamente comprometido por adherencias, la puntuación de ese lado es <strong>16 puntos fijos</strong>, independientemente de las adherencias tenues/densas registradas. Al marcar «Sí» en esa pregunta, los campos de adherencias tubáricas de ese lado se ocultan automáticamente.</div>
+
+      <h2>Cálculo del estadio</h2>
+      <table class="tbl">
+        <tr><th>Puntuación total</th><th>Estadio</th><th>Descripción</th></tr>
+        <tr><td>1–5 pts</td><td><span class="tag tg">I</span></td><td>Mínima</td></tr>
+        <tr><td>6–15 pts</td><td><span class="tag to">II</span></td><td>Leve</td></tr>
+        <tr><td>16–40 pts</td><td><span class="tag tp">III</span></td><td>Moderada</td></tr>
+        <tr><td>&gt;40 pts</td><td><span class="tag tr">IV</span></td><td>Severa</td></tr>
+      </table>
+
+      <h2>Aplicar el resultado</h2>
+      <p>El botón <strong>«Aplicar al formulario»</strong> escribe el estadio calculado en el campo Estadio rASRM y guarda la puntuación total junto a la paciente. Esa puntuación se muestra entre paréntesis en el modal de paciente (ej. «Estadio III (28 pts)») y en el informe clínico, dando trazabilidad del cálculo subyacente al estadio final.</p>
+    </div>
+
+    <!-- RECURRENCIA -->
+    <div class="section" id="s-recurrencia">
+      <div class="page-title">Recurrencia</div>
+      <div class="page-sub">Registro explícito de recidiva de la enfermedad tras tratamiento.</div>
+
+      <h2>Dónde se registra</h2>
+      <p>En el Tab 2 — Diagnóstico, bajo los campos de endometriosis. Un selector Sí/No; al marcar «Sí» se despliega un campo de texto libre para la localización.</p>
+
+      <h2>Visualización</h2>
+      <p>Cuando una paciente tiene recurrencia marcada como «Sí», el modal muestra una <strong>alerta roja destacada</strong> con la localización registrada, justo después de las intervenciones quirúrgicas. El dato también aparece en el informe clínico completo y en el plan de tratamiento.</p>
+
+      <div class="box bi"><div class="bt">💡 Ejemplos de localización</div>Pared abdominal (recurrencia en cicatriz de trocar), ovario contralateral, tabique rectovaginal, etc. El campo es de texto libre para máxima flexibilidad descriptiva.</div>
+    </div>
+
+    <!-- CIRUGÍA INTESTINAL/URINARIA -->
+    <div class="section" id="s-cirintestur">
+      <div class="page-title">Cirugía intestinal y urinaria</div>
+      <div class="page-sub">Registro detallado de intervenciones sobre órganos vecinos en endometriosis profunda.</div>
+
+      <h2>Chips de cirugía ampliados</h2>
+      <p>Los chips de intervenciones quirúrgicas (Tab 3 — Tratamiento) incluyen ahora técnicas específicas de endometriosis profunda:</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">
+        <span class="tag to">Ooforectomía</span><span class="tag to">Shaving rectal</span><span class="tag to">Resección discoide</span>
+      </div>
+
+      <h2>Campos detallados independientes</h2>
+      <p>Además de los chips, dos campos Sí/No específicos permiten registrar si hubo cirugía sobre el intestino o las vías urinarias, cada uno con un campo de texto libre condicional para describir la técnica exacta:</p>
+      <ul>
+        <li><strong>Cirugía intestinal:</strong> Sí/No → si Sí, describe el tipo (ej. resección segmentaria, shaving, sutura)</li>
+        <li><strong>Cirugía urinaria:</strong> Sí/No → si Sí, describe el tipo (ej. resección vesical, reimplante ureteral)</li>
+      </ul>
+
+      <h2>En el modal y el informe</h2>
+      <p>Si se marca «Sí» en cualquiera de los dos campos, el modal de paciente muestra una línea adicional bajo las intervenciones quirúrgicas («🔪 Cirugía intestinal: …» / «🔪 Cirugía urinaria: …»). El informe clínico y el plan de tratamiento incluyen estos datos como filas independientes.</p>
+    </div>
+
+    <!-- ESFERA PSICO-LABORAL -->
+    <div class="section" id="s-psicolaboral">
+      <div class="page-title">Esfera psico-laboral y sexual</div>
+      <div class="page-sub">Datos objetivos de impacto socio-laboral y de pareja, complementarios a los scores EHP-5/EHP-30.</div>
+
+      <h2>Diferencia con EHP-5/EHP-30</h2>
+      <p>Los cuestionarios EHP son escalas <strong>subjetivas</strong> (frecuencia percibida por la paciente). La esfera psico-laboral recoge datos más <strong>objetivos y administrativos</strong>, útiles para informes de derivación o documentación médico-legal.</p>
+
+      <h2>Campos disponibles</h2>
+      <p>En el Tab 1 — Síntomas, tras el bloque de calidad de vida:</p>
+      <ul>
+        <li><strong>Edad de inicio de los síntomas</strong> — en años, para análisis de demora diagnóstica más preciso que el rango de duración</li>
+        <li><strong>Problemas laborales</strong> (chips): Baja laboral / Despido o no renovación de contrato / Pérdida económica por reducción o adaptación laboral</li>
+        <li><strong>Afectación a las relaciones sexuales</strong> (Sí/No)</li>
+        <li><strong>Afectación psico-familiar</strong> (Sí/No)</li>
+      </ul>
+
+      <h2>Respuesta postquirúrgica y embarazo</h2>
+      <p>En el Tab 3 — Tratamiento se añaden también dos campos relacionados con el resultado del tratamiento:</p>
+      <ul>
+        <li><strong>Respuesta postquirúrgica:</strong> Completa / Parcialmente / No consigue</li>
+        <li><strong>Embarazo</strong> (si hay deseo gestacional): Consigue / No consigue</li>
+      </ul>
+      <p>Estos campos son independientes de la escala EVA de «Respuesta al tratamiento» ya existente, y aportan una taxonomía complementaria orientada a resultado quirúrgico y reproductivo.</p>
+    </div>
+
   </div><!-- /content -->
 </main>
 
@@ -1080,6 +1182,8 @@ const titles = {
   adjuntos:'Adjuntos clínicos', notas:'Notas de visita',
   enfermeria:'Valoración de enfermería',
   medconc:'Medicación concomitante', ehp30:'EHP-30 calidad de vida',
+  rasrm:'Calculadora rASRM', recurrencia:'Recurrencia',
+  cirintestur:'Cirugía intestinal/urinaria', psicolaboral:'Esfera psico-laboral',
   vistarapida:'Vista previa rápida',
   pwa:'Instalación PWA'
 };
